@@ -1,0 +1,423 @@
+# ANONYMOUS PROTOCOL
+
+## Generate ONLY the Opening Hero Experience (100vh)
+
+You are **not designing a website**.
+
+You are designing the **opening cinematic of a digital experience**.
+
+This is the homepage for **Anonymous Club**, the Cybersecurity Club of SDMCET.
+
+The goal is to create an unforgettable first impression that feels closer to an interactive movie than a landing page.
+
+The first viewport should be the kind of experience people record and share because they've never seen a college website behave like this.
+
+---
+
+# IMPORTANT
+
+Generate **ONLY the first viewport (100vh).**
+
+Do not generate any sections below.
+
+Do not create a normal homepage.
+
+Do not create a hero layout.
+
+Focus entirely on the opening experience.
+
+---
+
+# THE STORY
+
+The visitor has just connected to Anonymous Headquarters.
+
+The headquarters has been dormant.
+
+It has been waiting.
+
+The visitor's arrival activates the entire facility.
+
+The website should tell this story without using paragraphs or explanations.
+
+Everything should happen through visuals, motion and interaction.
+
+---
+
+# CINEMATIC SEQUENCE
+
+## Phase 1
+
+The page opens to almost complete darkness.
+
+No visible interface.
+
+No navigation.
+
+No buttons.
+
+No content.
+
+Only silence.
+
+A faint ambient glow barely illuminates the darkness.
+
+Tiny distant particles drift slowly.
+
+The visitor should wonder if the page has finished loading.
+
+---
+
+## Phase 2
+
+A single pulse appears somewhere on the screen.
+
+Not bright.
+
+Just enough to catch attention.
+
+The pulse expands across the darkness.
+
+Like electricity travelling through invisible cables.
+
+As it travels...
+
+thin connection lines begin appearing.
+
+Tiny nodes wake up.
+
+One.
+
+Then another.
+
+Then another.
+
+Nothing is random.
+
+Everything feels deliberate.
+
+---
+
+## Phase 3
+
+The signal continues travelling through the network.
+
+Every node activates another node.
+
+The visitor watches the headquarters literally boot itself.
+
+The environment slowly becomes alive.
+
+Data starts flowing.
+
+Signals travel.
+
+Connections pulse.
+
+Tiny indicators wake up.
+
+Very subtle.
+
+Very premium.
+
+Nothing flashy.
+
+---
+
+## Phase 4
+
+The signal reaches the center.
+
+Everything pauses.
+
+The environment becomes completely still.
+
+A tiny elegant system message appears.
+
+ACCESS GRANTED
+
+Immediately afterwards...
+
+The headquarters quietly lights up.
+
+The visitor realizes they are looking at an enormous digital operations center.
+
+Not a website.
+
+---
+
+## Phase 5
+
+Only now does the interface become interactive.
+
+The visitor can move the mouse.
+
+The cursor creates tiny signal ripples.
+
+Nearby nodes react.
+
+Connection lines brighten.
+
+Small information labels appear.
+
+Every movement makes the headquarters feel alive.
+
+---
+
+# VISUAL STYLE
+
+Imagine the craftsmanship of:
+
+Apple
+
+Linear
+
+Arc Browser
+
+Vercel
+
+Nothing
+
+Swiss Editorial Design
+
+NASA Mission Control
+
+High-end architectural visualizations
+
+Modern operating systems
+
+Do NOT copy their layouts.
+
+Capture their level of precision.
+
+---
+
+# COLOR PALETTE
+
+Primary
+
+Matte Black
+
+Deep Midnight Blue
+
+Graphite
+
+Slate
+
+Soft White
+
+Accent
+
+Muted Electric Blue
+
+Use only one accent color.
+
+Avoid bright gradients.
+
+Avoid neon.
+
+Avoid oversaturated colors.
+
+---
+
+# BACKGROUND
+
+The background should feel like an enormous intelligent space.
+
+Not empty.
+
+Not cluttered.
+
+Use:
+
+ambient volumetric lighting
+
+slow floating particles
+
+faint architectural grid
+
+soft depth
+
+very subtle digital fog
+
+moving data signals
+
+thin animated network paths
+
+Everything should move extremely slowly.
+
+---
+
+# TYPOGRAPHY
+
+Typography should appear only after the headquarters powers on.
+
+Large.
+
+Elegant.
+
+Editorial.
+
+Example
+
+ANONYMOUS
+
+Below
+
+Think Beyond the Firewall.
+
+No paragraphs.
+
+No marketing copy.
+
+No buzzwords.
+
+---
+
+# NAVIGATION
+
+Navigation should not exist as a traditional navbar.
+
+Instead.
+
+Different areas of the headquarters represent navigation.
+
+COMMAND CENTER
+
+OPERATIONS
+
+INTELLIGENCE
+
+AGENTS
+
+CYBER LAB
+
+FORENSICS
+
+VAULT
+
+Each destination exists naturally inside the environment.
+
+Hovering reveals additional information.
+
+Clicking enters that room.
+
+---
+
+# MOTION
+
+Every animation should feel expensive.
+
+Slow.
+
+Elegant.
+
+Purposeful.
+
+Examples:
+
+connection lines growing
+
+signals travelling
+
+nodes waking up
+
+particles reacting
+
+soft breathing lights
+
+subtle parallax
+
+smooth easing
+
+tiny cursor ripples
+
+Nothing should bounce.
+
+Nothing should spin.
+
+Nothing should feel playful.
+
+Everything should feel engineered.
+
+---
+
+# SOUND (OPTIONAL)
+
+Very subtle ambient server hum.
+
+Soft electronic pulse.
+
+Tiny confirmation clicks.
+
+Nothing loud.
+
+Nothing distracting.
+
+---
+
+# WHAT TO AVOID
+
+Never generate:
+
+generic hero sections
+
+centered CTA
+
+feature cards
+
+glassmorphism overload
+
+dashboard widgets
+
+Matrix code rain
+
+green hacker aesthetics
+
+binary backgrounds
+
+glitch effects
+
+gaming UI
+
+cyberpunk cities
+
+stock illustrations
+
+robot graphics
+
+hooded hacker imagery
+
+floating laptop mockups
+
+generic SaaS layouts
+
+---
+
+# EMOTIONAL GOAL
+
+The visitor should experience:
+
+Curiosity
+
+↓
+
+Discovery
+
+↓
+
+Wonder
+
+↓
+
+Control
+
+↓
+
+Exploration
+
+The first viewport should feel like the opening scene of a science fiction film where a forgotten intelligence headquarters quietly wakes up because someone has finally arrived.
+
+The design should be timeless, minimal, cinematic, and premium.
+
+The final experience should feel worthy of an Awwwards Site of the Day.

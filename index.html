@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ANONYMOUS — Cyber Club HQ</title>
+  <!-- Modern Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Audio Controls -->
+  <div id="audio-panel" class="hidden">
+    <button id="audio-toggle" aria-label="Toggle audio">
+      <span class="audio-wave">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </span>
+      <span id="audio-label">SOUND: ON</span>
+    </button>
+  </div>
+
+  <!-- Background Space Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Volumetric Lighting Fog Overlay -->
+  <div id="volumetric-fog"></div>
+
+  <!-- Phase 1: Dormant State Screen (Click to Initialize) -->
+  <div id="dormant-screen" class="active">
+    <div class="terminal-loader">
+      <div class="cmd-line"><span class="prompt">guest@anonymous:~$</span> <span id="dormant-cmd">connect --hq</span><span class="cursor">_</span></div>
+      <div id="dormant-prompt" class="dormant-hint">CLICK TO ESTABLISH SECURE LINK</div>
+    </div>
+  </div>
+
+  <!-- Main HUD Layer (Revealed during Phase 4) -->
+  <main id="hud-container">
+    <!-- Header meta bar -->
+    <header class="hud-header">
+      <div class="hud-meta-left">
+        <span class="status-indicator"></span>
+        <span id="sys-status">SYS_STATUS: CONNECTING</span>
+      </div>
+      <div class="hud-meta-right">
+        <span>ANONYMOUS CLUB // SDMCET</span>
+      </div>
+    </header>
+
+    <!-- Center Cinematic Text -->
+    <div id="cinematic-title-container">
+      <h1 class="main-title">ANONYMOUS</h1>
+      <p class="main-subtitle">Think Beyond the Firewall.</p>
+    </div>
+
+    <!-- Interactive Rooms / Network Navigation Nodes -->
+    <nav id="network-navigation">
+      <!-- These nodes will be positioned dynamically or statically in a sleek minimalist layout.
+           We'll use absolute positions matching the canvas node points. -->
+      <a href="#command-center" class="nav-node" data-room="command" id="node-command" style="top: 30%; left: 50%;">
+        <div class="node-ring"></div>
+        <span class="node-label">COMMAND CENTER</span>
+        <div class="node-card">
+          <span class="card-status text-secure">SECURE</span>
+          <span class="card-desc">Core operations and central directory.</span>
+        </div>
+      </a>
+
+      <a href="#operations" class="nav-node" data-room="operations" id="node-operations" style="top: 45%; left: 30%;">
+        <div class="node-ring"></div>
+        <span class="node-label">OPERATIONS</span>
+        <div class="node-card">
+          <span class="card-status text-active">ACTIVE_FEED</span>
+          <span class="card-desc">Live security feed, monitoring, metrics.</span>
+        </div>
+      </a>
+
+      <a href="#intelligence" class="nav-node" data-room="intelligence" id="node-intelligence" style="top: 45%; left: 70%;">
+        <div class="node-ring"></div>
+        <span class="node-label">INTELLIGENCE</span>
+        <div class="node-card">
+          <span class="card-status text-secure">ENCRYPTED</span>
+          <span class="card-desc">Information gathering & vulnerability feeds.</span>
+        </div>
+      </a>
+
+      <a href="#agents" class="nav-node" data-room="agents" id="node-agents" style="top: 65%; left: 22%;">
+        <div class="node-ring"></div>
+        <span class="node-label">AGENTS</span>
+        <div class="node-card">
+          <span class="card-status text-active">COMM_LINK</span>
+          <span class="card-desc">Club member directory and operations team.</span>
+        </div>
+      </a>
+
+      <a href="#cyber-lab" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 68%; left: 40%;">
+        <div class="node-ring"></div>
+        <span class="node-label">CYBER LAB</span>
+        <div class="node-card">
+          <span class="card-status text-warning">OFFLINE_TEST</span>
+          <span class="card-desc">Vulnerable environments and hands-on targets.</span>
+        </div>
+      </a>
+
+      <a href="#forensics" class="nav-node" data-room="forensics" id="node-forensics" style="top: 68%; left: 60%;">
+        <div class="node-ring"></div>
+        <span class="node-label">FORENSICS</span>
+        <div class="node-card">
+          <span class="card-status text-secure">STANDBY</span>
+          <span class="card-desc">Incident logs, investigation tools, CTF writeups.</span>
+        </div>
+      </a>
+
+      <a href="#vault" class="nav-node" data-room="vault" id="node-vault" style="top: 65%; left: 78%;">
+        <div class="node-ring"></div>
+        <span class="node-label">VAULT</span>
+        <div class="node-card">
+          <span class="card-status text-restricted font-restricted">RESTRICTED</span>
+          <span class="card-desc">Archived payloads, certificates, achievements.</span>
+        </div>
+      </a>
+    </nav>
+
+    <!-- System Message Alert (Phase 4 reveal) -->
+    <div id="system-alert-box">
+      <div class="alert-content">
+        <span class="alert-code">MSG_ID: 108.97</span>
+        <span class="alert-text">ACCESS GRANTED. LINK STABLE.</span>
+      </div>
+    </div>
+
+    <!-- Bottom Metadata Panel -->
+    <footer class="hud-footer">
+      <div class="footer-segment">
+        <span class="segment-label">HQ_COORDINATES</span>
+        <span class="segment-value">15.4851° N, 74.9818° E</span>
+      </div>
+      <div class="footer-segment">
+        <span class="segment-label">PROTOCOL</span>
+        <span class="segment-value">ANON.V1.SECURE</span>
+      </div>
+      <div class="footer-segment">
+        <span class="segment-label">SIGNAL_STRENGTH</span>
+        <span id="signal-value" class="segment-value">98.4%</span>
+      </div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

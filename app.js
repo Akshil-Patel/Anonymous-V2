@@ -899,3 +899,93 @@ window.addEventListener('resize', () => {
 
 // Start loop
 requestAnimationFrame(tick);
+
+// -------------------------------------------------------------
+// MOBILE SWIPE GESTURES FOR NAVBAR
+// -------------------------------------------------------------
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+let currentNavIndex = 0;
+const navLinks = document.querySelectorAll('.nav-link');
+const totalNavItems = navLinks.length;
+
+function handleSwipe() {
+  const diffX = touchStartX - touchEndX;
+  const diffY = touchStartY - touchEndY;
+  
+  // Only trigger if horizontal swipe is larger than vertical swipe
+  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+    if (diffX > 0) {
+      // Swiped left, go to next tab
+      if (currentNavIndex < totalNavItems - 1) {
+        changeNavTab(currentNavIndex + 1);
+      }
+    } else {
+      // Swiped right, go to previous tab
+      if (currentNavIndex > 0) {
+        changeNavTab(currentNavIndex - 1);
+      }
+    }
+  }
+}
+
+function changeNavTab(newIndex) {
+  currentNavIndex = newIndex;
+  
+  // Update active state in UI
+  navLinks.forEach((link, idx) => {
+    if (idx === newIndex) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+
+  // Mock transition effect
+  const tabName = navLinks[newIndex].querySelector('.nav-text').textContent;
+  triggerMockTransition(tabName);
+}
+
+function triggerMockTransition(tabName) {
+  const hudContainer = document.getElementById('hud-container');
+  hudContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  hudContainer.style.opacity = '0';
+  hudContainer.style.transform = 'scale(1.05)';
+  
+  setTimeout(() => {
+    // Optionally update the central title to reflect the mock page
+    const titleEl = document.querySelector('.main-title');
+    if (titleEl) {
+      if (tabName === 'HOME') {
+        titleEl.textContent = 'ANONYMOUS';
+      } else {
+        titleEl.textContent = tabName;
+      }
+    }
+    
+    // Fade back in
+    hudContainer.style.opacity = '1';
+    hudContainer.style.transform = 'scale(1)';
+  }, 600);
+}
+
+// Support click navigation on desktop and mobile
+navLinks.forEach((link, idx) => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    changeNavTab(idx);
+  });
+});
+
+window.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+});
+
+window.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  touchEndY = e.changedTouches[0].screenY;
+  handleSwipe();
+});

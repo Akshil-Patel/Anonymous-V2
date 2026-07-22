@@ -630,15 +630,34 @@ body {
 
 .nav-link {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   letter-spacing: 2px;
-  color: #64748b;
-  /* Clean muted slate */
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.4s ease;
+  padding: 4px 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
-.nav-link:hover {
+.nav-icon {
+  display: none; /* Hidden on desktop */
+  opacity: 0.6;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.nav-link:hover .nav-icon,
+.nav-link.active .nav-icon {
+  opacity: 1;
+  transform: translateY(-2px);
+  color: var(--accent-color);
+}
+
+.nav-link:hover .nav-text,
+.nav-link.active .nav-text {
   color: var(--text-primary);
 }
 
@@ -839,43 +858,64 @@ body {
 
 /* Mobile phones */
 @media (max-width: 600px) {
-  /* Navbar: ultra-compact for mobile */
+  /* Navbar: Minimal Floating Pill for Mobile */
   .glass-nav {
-    top: 0.5rem;
-    width: 96%;
-    padding: 0.4rem 1rem;
-    border-radius: 10px;
+    top: auto;
+    bottom: 2rem;
+    width: max-content;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: rgba(10, 10, 12, 0.35);
+    backdrop-filter: saturate(180%) blur(40px);
+    -webkit-backdrop-filter: saturate(180%) blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
   }
 
-  .nav-logo {
-    height: 16px;
-  }
-
-  .nav-brand {
-    font-size: 0.65rem;
-    letter-spacing: 1.5px;
+  .nav-left {
+    display: none; /* Hide logo/brand on mobile nav */
   }
 
   .nav-right {
-    gap: 10px;
+    width: 100%;
+    gap: 1.8rem;
+    justify-content: center;
   }
 
-  .nav-link {
-    font-size: 0.55rem;
-    letter-spacing: 1px;
+  .nav-text {
+    display: none; /* Hide text, show only icons */
+  }
+
+  .nav-icon {
+    display: block; /* Show icons */
+    width: 20px;
+    height: 20px;
+    opacity: 0.5; /* Muted default state */
+    stroke-width: 1.5px; /* Thinner, cleaner lines */
+  }
+
+  .nav-link.active .nav-icon {
+    opacity: 1;
+    color: var(--text-primary); /* White instead of blue for minimal look */
+    transform: none; /* Remove desktop jump effect on mobile */
+  }
+
+  .nav-audio-toggle .nav-icon {
+    display: block;
+    opacity: 0.5;
+  }
+
+  .nav-link, .nav-audio-toggle {
+    padding: 4px;
+    gap: 0;
   }
 
   .nav-divider {
-    display: none; /* Remove dividers on small phones */
-  }
-
-  #audio-label {
     display: none;
   }
 
-  #audio-toggle {
-    padding: 4px 4px;
-    gap: 0;
+  #audio-label, .audio-wave {
+    display: none;
   }
 
   /* Title */
@@ -883,10 +923,12 @@ body {
     width: 95%;
     max-width: 100vw;
     padding: 1.5rem 1rem;
+    /* Move up slightly to avoid bottom nav overlap */
+    transform: translate(-50%, -60%);
   }
 
   .main-title {
-    font-size: clamp(1.4rem, 6vw, 2.5rem);
+    font-size: clamp(1.8rem, 8vw, 3rem); /* Increased size */
     letter-spacing: 0.15em;
     margin-right: -0.15em;
   }
@@ -896,14 +938,18 @@ body {
   }
 
   .main-subtitle {
-    font-size: 0.75rem;
-    letter-spacing: 1px;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    margin-top: 10px;
   }
 
-  /* Scale down nodes on mobile to avoid overlap */
+  /* Node scale adjusted to children to avoid absolute position disconnect */
   #network-navigation {
-    transform: scale(0.8);
-    transform-origin: center center;
+    transform: none;
+  }
+
+  .nav-node {
+    transform: translate(-50%, -50%) scale(0.85); /* Scale directly on node */
   }
 
   .node-card {
@@ -912,14 +958,15 @@ body {
   }
 
   .node-label {
-    font-size: 0.5rem;
-    letter-spacing: 1px;
-    padding: 2px 4px;
+    font-size: 0.65rem; /* Increased size */
+    letter-spacing: 1.5px;
+    padding: 4px 6px;
+    margin-top: 10px;
   }
 
   .node-ring {
-    width: 6px;
-    height: 6px;
+    width: 8px; /* Slightly larger */
+    height: 8px;
   }
 
   #system-alert-box {

@@ -753,14 +753,45 @@ body {
 /* -------------------------------------------------------------
    RESPONSIVENESS (Editorial adaptations)
    ------------------------------------------------------------- */
+
+/* Tablet / Medium screens */
 @media (max-width: 900px) {
   #hud-container {
     padding: 1.5rem;
   }
 
-  #audio-panel {
-    top: 1.5rem;
-    right: 1.5rem;
+  /* Navbar: compact for tablet */
+  .glass-nav {
+    width: 94%;
+    padding: 0.5rem 1.2rem;
+    border-radius: 12px;
+  }
+
+  .nav-brand {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+  }
+
+  .nav-logo {
+    height: 18px;
+  }
+
+  .nav-link {
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+  }
+
+  .nav-divider {
+    height: 8px;
+  }
+
+  #audio-label {
+    display: none; /* Hide text, keep wave icon only */
+  }
+
+  #audio-toggle {
+    padding: 4px 6px;
+    gap: 0;
   }
 
   .hud-header {
@@ -775,6 +806,10 @@ body {
 
   #hud-container.revealed .main-title {
     letter-spacing: 0.28em;
+  }
+
+  .main-subtitle {
+    font-size: clamp(0.8rem, 2.2vw, 1.2rem);
   }
 
   /* Compact grid footer on medium viewports */
@@ -802,10 +837,52 @@ body {
   }
 }
 
+/* Mobile phones */
 @media (max-width: 600px) {
+  /* Navbar: ultra-compact for mobile */
+  .glass-nav {
+    top: 0.5rem;
+    width: 96%;
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+  }
+
+  .nav-logo {
+    height: 16px;
+  }
+
+  .nav-brand {
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+  }
+
+  .nav-right {
+    gap: 10px;
+  }
+
+  .nav-link {
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+  }
+
+  .nav-divider {
+    display: none; /* Remove dividers on small phones */
+  }
+
+  #audio-label {
+    display: none;
+  }
+
+  #audio-toggle {
+    padding: 4px 4px;
+    gap: 0;
+  }
+
+  /* Title */
   #cinematic-title-container {
     width: 95%;
     max-width: 100vw;
+    padding: 1.5rem 1rem;
   }
 
   .main-title {
@@ -818,8 +895,13 @@ body {
     letter-spacing: 0.2em;
   }
 
+  .main-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+
+  /* Scale down nodes on mobile to avoid overlap */
   #network-navigation {
-    /* Scale down nodes on mobile to avoid overlap */
     transform: scale(0.8);
     transform-origin: center center;
   }
@@ -829,14 +911,50 @@ body {
     /* Hide popup descriptions on small mobiles */
   }
 
-  .main-subtitle {
-    font-size: 0.75rem;
+  .node-label {
+    font-size: 0.5rem;
     letter-spacing: 1px;
+    padding: 2px 4px;
+  }
+
+  .node-ring {
+    width: 6px;
+    height: 6px;
   }
 
   #system-alert-box {
     display: none;
     /* Hide secondary HUD alerts on small screens */
+  }
+}
+
+/* Very small phones (iPhone SE, etc.) */
+@media (max-width: 380px) {
+  .glass-nav {
+    padding: 0.35rem 0.75rem;
+  }
+
+  .nav-brand {
+    font-size: 0.58rem;
+    letter-spacing: 1px;
+  }
+
+  .nav-link {
+    font-size: 0.48rem;
+  }
+
+  .main-title {
+    font-size: clamp(1.2rem, 5.5vw, 2rem);
+    letter-spacing: 0.1em;
+    margin-right: -0.1em;
+  }
+
+  #hud-container.revealed .main-title {
+    letter-spacing: 0.15em;
+  }
+
+  #network-navigation {
+    transform: scale(0.65);
   }
 }
 

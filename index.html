@@ -11,18 +11,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Ambient Audio Controls -->
-  <div id="audio-panel" class="hidden">
-    <button id="audio-toggle" aria-label="Toggle audio">
-      <span class="audio-wave">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </span>
-      <span id="audio-label">SOUND: ON</span>
-    </button>
-  </div>
+  <!-- Floating Glass Navbar -->
+  <header id="main-nav" class="glass-nav hidden">
+    <div class="nav-left">
+      <img src="logo.png" alt="Anonymous Logo" class="nav-logo">
+      <span class="nav-brand">ANONYMOUS</span>
+    </div>
+    <div class="nav-right">
+      <a href="#about" class="nav-link">ABOUT</a>
+      <span class="nav-divider"></span>
+      <a href="#events" class="nav-link">EVENTS</a>
+      <span class="nav-divider"></span>
+      <a href="#join" class="nav-link">JOIN US</a>
+      <span class="nav-divider"></span>
+      
+      <!-- Ambient Audio Controls -->
+      <button id="audio-toggle" class="nav-audio-toggle" aria-label="Toggle audio">
+        <span class="audio-wave">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </span>
+        <span id="audio-label">SOUND: ON</span>
+      </button>
+    </div>
+  </header>
 
   <!-- Background Space Canvas -->
   <canvas id="ambient-canvas"></canvas>
@@ -40,17 +54,6 @@
 
   <!-- Main HUD Layer (Revealed during Phase 4) -->
   <main id="hud-container">
-    <!-- Header meta bar -->
-    <header class="hud-header">
-      <div class="hud-meta-left">
-        <span class="status-indicator"></span>
-        <span id="sys-status">SYS_STATUS: CONNECTING</span>
-      </div>
-      <div class="hud-meta-right">
-        <span>ANONYMOUS CLUB // SDMCET</span>
-      </div>
-    </header>
-
     <!-- Center Cinematic Text -->
     <div id="cinematic-title-container">
       <h1 class="main-title">ANONYMOUS</h1>
@@ -61,7 +64,7 @@
     <nav id="network-navigation">
       <!-- These nodes will be positioned dynamically or statically in a sleek minimalist layout.
            We'll use absolute positions matching the canvas node points. -->
-      <a href="#command-center" class="nav-node" data-room="command" id="node-command" style="top: 30%; left: 50%;">
+      <a href="#command-center" class="nav-node" data-room="command" id="node-command" style="top: 22%; left: 45%;">
         <div class="node-ring"></div>
         <span class="node-label">COMMAND CENTER</span>
         <div class="node-card">
@@ -70,7 +73,7 @@
         </div>
       </a>
 
-      <a href="#operations" class="nav-node" data-room="operations" id="node-operations" style="top: 45%; left: 30%;">
+      <a href="#operations" class="nav-node" data-room="operations" id="node-operations" style="top: 34%; left: 20%;">
         <div class="node-ring"></div>
         <span class="node-label">OPERATIONS</span>
         <div class="node-card">
@@ -79,7 +82,7 @@
         </div>
       </a>
 
-      <a href="#intelligence" class="nav-node" data-room="intelligence" id="node-intelligence" style="top: 45%; left: 70%;">
+      <a href="#intelligence" class="nav-node" data-room="intelligence" id="node-intelligence" style="top: 26%; left: 75%;">
         <div class="node-ring"></div>
         <span class="node-label">INTELLIGENCE</span>
         <div class="node-card">
@@ -88,7 +91,7 @@
         </div>
       </a>
 
-      <a href="#agents" class="nav-node" data-room="agents" id="node-agents" style="top: 65%; left: 22%;">
+      <a href="#agents" class="nav-node" data-room="agents" id="node-agents" style="top: 74%; left: 16%;">
         <div class="node-ring"></div>
         <span class="node-label">AGENTS</span>
         <div class="node-card">
@@ -97,7 +100,7 @@
         </div>
       </a>
 
-      <a href="#cyber-lab" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 68%; left: 40%;">
+      <a href="#cyber-lab" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 76%; left: 38%;">
         <div class="node-ring"></div>
         <span class="node-label">CYBER LAB</span>
         <div class="node-card">
@@ -106,7 +109,7 @@
         </div>
       </a>
 
-      <a href="#forensics" class="nav-node" data-room="forensics" id="node-forensics" style="top: 68%; left: 60%;">
+      <a href="#forensics" class="nav-node" data-room="forensics" id="node-forensics" style="top: 72%; left: 62%;">
         <div class="node-ring"></div>
         <span class="node-label">FORENSICS</span>
         <div class="node-card">
@@ -115,7 +118,7 @@
         </div>
       </a>
 
-      <a href="#vault" class="nav-node" data-room="vault" id="node-vault" style="top: 65%; left: 78%;">
+      <a href="#vault" class="nav-node" data-room="vault" id="node-vault" style="top: 78%; left: 84%;">
         <div class="node-ring"></div>
         <span class="node-label">VAULT</span>
         <div class="node-card">
@@ -124,30 +127,6 @@
         </div>
       </a>
     </nav>
-
-    <!-- System Message Alert (Phase 4 reveal) -->
-    <div id="system-alert-box">
-      <div class="alert-content">
-        <span class="alert-code">MSG_ID: 108.97</span>
-        <span class="alert-text">ACCESS GRANTED. LINK STABLE.</span>
-      </div>
-    </div>
-
-    <!-- Bottom Metadata Panel -->
-    <footer class="hud-footer">
-      <div class="footer-segment">
-        <span class="segment-label">HQ_COORDINATES</span>
-        <span class="segment-value">15.4851° N, 74.9818° E</span>
-      </div>
-      <div class="footer-segment">
-        <span class="segment-label">PROTOCOL</span>
-        <span class="segment-value">ANON.V1.SECURE</span>
-      </div>
-      <div class="footer-segment">
-        <span class="segment-label">SIGNAL_STRENGTH</span>
-        <span id="signal-value" class="segment-value">98.4%</span>
-      </div>
-    </footer>
   </main>
 
   <script src="app.js"></script>

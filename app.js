@@ -20,13 +20,13 @@ let height = (canvas.height = window.innerHeight);
 
 // Navigation Nodes Coordinates (percentages relative to viewport)
 const nodeDefs = {
-  command: { id: 'node-command', px: 0.5, py: 0.3, label: 'COMMAND CENTER' },
-  operations: { id: 'node-operations', px: 0.3, py: 0.45, label: 'OPERATIONS' },
-  intelligence: { id: 'node-intelligence', px: 0.7, py: 0.45, label: 'INTELLIGENCE' },
-  agents: { id: 'node-agents', px: 0.22, py: 0.65, label: 'AGENTS' },
-  'cyber-lab': { id: 'node-cyber-lab', px: 0.4, py: 0.68, label: 'CYBER LAB' },
-  forensics: { id: 'node-forensics', px: 0.6, py: 0.68, label: 'FORENSICS' },
-  vault: { id: 'node-vault', px: 0.78, py: 0.65, label: 'VAULT' },
+  command: { id: 'node-command', px: 0.45, py: 0.22, label: 'COMMAND CENTER' },
+  operations: { id: 'node-operations', px: 0.2, py: 0.34, label: 'OPERATIONS' },
+  intelligence: { id: 'node-intelligence', px: 0.75, py: 0.26, label: 'INTELLIGENCE' },
+  agents: { id: 'node-agents', px: 0.16, py: 0.74, label: 'AGENTS' },
+  'cyber-lab': { id: 'node-cyber-lab', px: 0.38, py: 0.76, label: 'CYBER LAB' },
+  forensics: { id: 'node-forensics', px: 0.62, py: 0.72, label: 'FORENSICS' },
+  vault: { id: 'node-vault', px: 0.84, py: 0.78, label: 'VAULT' },
 };
 
 // Map nodes with screen pixels
@@ -70,14 +70,27 @@ function calculateNodePositions() {
 updateCachedColors();
 calculateNodePositions();
 
-// Connection network tree definition (source -> target)
+// Connection network tree definition (source -> target) - Spiderweb pattern
 const connectionDefs = [
   { from: 'command', to: 'operations' },
   { from: 'command', to: 'intelligence' },
+  { from: 'command', to: 'cyber-lab' },
+  { from: 'command', to: 'forensics' },
+  
   { from: 'operations', to: 'agents' },
   { from: 'operations', to: 'cyber-lab' },
+  { from: 'operations', to: 'intelligence' }, // horizontal cross link
+  
   { from: 'intelligence', to: 'forensics' },
-  { from: 'intelligence', to: 'vault' }
+  { from: 'intelligence', to: 'vault' },
+  
+  { from: 'agents', to: 'cyber-lab' },
+  { from: 'cyber-lab', to: 'forensics' },
+  { from: 'forensics', to: 'vault' },
+  
+  // Outer support spiderweb links
+  { from: 'agents', to: 'command' },
+  { from: 'vault', to: 'command' }
 ];
 
 let activeConnections = [];
@@ -117,37 +130,9 @@ function initAudio() {
     masterGain = audioCtx.createGain();
     masterGain.gain.setValueAtTime(0.08, audioCtx.currentTime); // keep it extremely clean & soft
     masterGain.connect(audioCtx.destination);
-    
-    // Build and fade in system hum
-    startSystemHum();
   } catch (err) {
     console.warn("Web Audio API failed to load: ", err);
   }
-}
-
-function startSystemHum() {
-  if (!audioCtx) return;
-  
-  // 55Hz Low Sine Wave
-  const oscLow = audioCtx.createOscillator();
-  oscLow.type = 'sine';
-  oscLow.frequency.setValueAtTime(55, audioCtx.currentTime);
-  
-  // High pass/lowpass filters to texture the hum (simulates structural ventilation/servers)
-  const lpFilter = audioCtx.createBiquadFilter();
-  lpFilter.type = 'lowpass';
-  lpFilter.frequency.setValueAtTime(100, audioCtx.currentTime);
-  
-  humGainNode = audioCtx.createGain();
-  humGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-  // Fade in hum slowly over 6s
-  humGainNode.gain.linearRampToValueAtTime(0.45, audioCtx.currentTime + 6);
-  
-  oscLow.connect(lpFilter);
-  lpFilter.connect(humGainNode);
-  humGainNode.connect(masterGain);
-  
-  oscLow.start();
 }
 
 function playClickSound(freq = 600, decay = 0.05, gainVal = 0.12) {
@@ -215,6 +200,42 @@ function playAccessGrantedChime() {
     osc.start(now + i * 0.07);
     osc.stop(now + i * 0.07 + 2.4);
   });
+}
+
+function playNodeHoverSound() {
+  if (!audioCtx || !state.soundEnabled) return;
+  
+  const now = audioCtx.currentTime;
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  
+  osc1.type = 'sine';
+  osc2.type = 'triangle';
+  
+  // Harmonious cyber beep interval
+  osc1.frequency.setValueAtTime(880, now);
+  osc1.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+  
+  osc2.frequency.setValueAtTime(1320, now);
+  osc2.frequency.exponentialRampToValueAtTime(1800, now + 0.08);
+  
+  filter.type = 'highpass';
+  filter.frequency.setValueAtTime(800, now);
+  
+  gainNode.gain.setValueAtTime(0.03, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+  
+  osc1.connect(filter);
+  osc2.connect(filter);
+  filter.connect(gainNode);
+  gainNode.connect(masterGain);
+  
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + 0.1);
+  osc2.stop(now + 0.1);
 }
 
 // -------------------------------------------------------------
@@ -356,7 +377,7 @@ document.querySelectorAll('.nav-node').forEach(node => {
     if (state.phase < 5) return;
     const now = Date.now();
     if (now - lastHoverSoundTime > 150) {
-      playClickSound(900, 0.02, 0.05);
+      playNodeHoverSound();
       lastHoverSoundTime = now;
     }
   });
@@ -418,8 +439,8 @@ window.addEventListener('click', (e) => {
   // Fade out loader UI
   document.getElementById('dormant-screen').classList.add('fade-out');
   
-  // Reveal audio control
-  document.getElementById('audio-panel').classList.remove('hidden');
+  // Reveal main nav
+  document.getElementById('main-nav').classList.remove('hidden');
 });
 
 // Sound Toggle control
@@ -431,15 +452,9 @@ audioToggleBtn.addEventListener('click', (e) => {
   if (state.soundEnabled) {
     document.getElementById('audio-label').textContent = 'SOUND: ON';
     audioToggleBtn.classList.add('audio-active');
-    if (humGainNode && audioCtx) {
-      humGainNode.gain.linearRampToValueAtTime(0.45, audioCtx.currentTime + 0.5);
-    }
   } else {
     document.getElementById('audio-label').textContent = 'SOUND: OFF';
     audioToggleBtn.classList.remove('audio-active');
-    if (humGainNode && audioCtx) {
-      humGainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-    }
   }
   playClickSound(700, 0.05, 0.08);
 });
@@ -460,7 +475,7 @@ function triggerNetworkBoot(startNodeKey) {
         from: conn.from,
         to: conn.to,
         progress: 0,
-        speed: 0.007 + Math.random() * 0.006,
+        speed: 0.025 + Math.random() * 0.015,
       });
       nodes[conn.to].state = 'booting';
     } else if (conn.to === startNodeKey && nodes[conn.from].state === 'dormant') {
@@ -468,7 +483,7 @@ function triggerNetworkBoot(startNodeKey) {
         from: conn.to,
         to: conn.from,
         progress: 0,
-        speed: 0.007 + Math.random() * 0.006,
+        speed: 0.025 + Math.random() * 0.015,
       });
       nodes[conn.from].state = 'booting';
     }
@@ -502,7 +517,7 @@ function updateNetworkBoot() {
               from: nextConn.from,
               to: nextConn.to,
               progress: 0,
-              speed: 0.008 + Math.random() * 0.008,
+              speed: 0.025 + Math.random() * 0.015,
             });
             nodes[nextConn.to].state = 'booting';
           } else if (nextConn.to === targetNodeKey && nodes[nextConn.from].state === 'dormant') {
@@ -510,7 +525,7 @@ function updateNetworkBoot() {
               from: nextConn.to,
               to: nextConn.from,
               progress: 0,
-              speed: 0.008 + Math.random() * 0.008,
+              speed: 0.025 + Math.random() * 0.015,
             });
             nodes[nextConn.from].state = 'booting';
           }
@@ -542,7 +557,6 @@ function triggerRevealSequence() {
     
     const hud = document.getElementById('hud-container');
     hud.classList.add('revealed');
-    document.getElementById('sys-status').textContent = 'SYS_STATUS: DECK_STABLE';
     
     // Switch state to fully Interactive exploration
     state.phase = 5;
@@ -556,7 +570,7 @@ function triggerRevealSequence() {
       speed: 3.5,
       alpha: 0.5,
     });
-  }, 1200);
+  }, 700);
 }
 
 // -------------------------------------------------------------
@@ -628,7 +642,7 @@ function drawNetworkLines() {
   // 1. Draw Ignition path (Phase 2)
   ignitionLines.forEach(line => {
     if (line.progress < 1) {
-      line.progress += 0.015; // grows line
+      line.progress += 0.045; // grows line faster (was 0.015)
       
       const currentX = line.startX + (line.endX - line.startX) * line.progress;
       const currentY = line.startY + (line.endY - line.startY) * line.progress;

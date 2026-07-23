@@ -331,14 +331,9 @@ body.cursor-freakout .dot-visual {
   pointer-events: none;
 }
 
-.glow-logo-base,
-.glow-logo-active {
+.glow-logo-base {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  
+  top: 0; left: 0; width: 100%; height: 100%;
   -webkit-mask-image: url('logo.png');
   -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -347,43 +342,82 @@ body.cursor-freakout .dot-visual {
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
-}
-
-/* Static solid white logo outline */
-.glow-logo-base {
   background-color: #ffffff;
-  opacity: 0.95;
+  opacity: 0;
   z-index: 1;
+  animation: base-logo-appear 0.8s ease-out forwards;
 }
 
-/* Rising outline glow sweep (tiny, subtle shiny gradient band) */
-.glow-logo-active {
-  background-image: linear-gradient(
-    to top,
-    rgba(96, 165, 250, 0) 0%,
-    rgba(96, 165, 250, 0.3) 25%,
-    #60a5fa 48%,
-    #ffffff 50%,
-    #60a5fa 52%,
-    rgba(96, 165, 250, 0.3) 75%,
-    rgba(96, 165, 250, 0) 100%
-  );
-  background-size: 100% 45px; /* Tiny, subtle shine band */
-  background-repeat: no-repeat;
-  background-position: 0 350px;
-  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.7));
+.tracer-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  -webkit-mask-image: radial-gradient(circle, transparent 58%, black 62%), url('logo.png');
+  -webkit-mask-size: 100% 100%, contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-composite: source-in;
+  mask-image: radial-gradient(circle, transparent 58%, black 62%), url('logo.png');
+  mask-size: 100% 100%, contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-composite: intersect;
   z-index: 2;
-  will-change: background-position;
-  animation: rise-glow-sweep 3.8s linear forwards; /* Runs exactly once */
+  opacity: 0;
+  animation: fade-in-tracers 0.2s linear 0.8s forwards;
 }
 
-@keyframes rise-glow-sweep {
-  0% {
-    background-position: 0 350px;
-  }
-  100% {
-    background-position: 0 -350px;
-  }
+.glow-logo-tracer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.8));
+}
+
+.tracer-left {
+  background: conic-gradient(
+    from 180deg,
+    transparent 0deg,
+    transparent 320deg,
+    rgba(96, 165, 250, 0) 320deg,
+    #60a5fa 355deg,
+    #ffffff 360deg
+  );
+  animation: trace-left 3.5s cubic-bezier(0.4, 0, 0.2, 1) 1.0s forwards;
+}
+
+.tracer-right {
+  background: conic-gradient(
+    from 180deg,
+    #ffffff 0deg,
+    #60a5fa 5deg,
+    rgba(96, 165, 250, 0) 40deg,
+    transparent 40deg,
+    transparent 360deg
+  );
+  animation: trace-right 3.5s cubic-bezier(0.4, 0, 0.2, 1) 1.0s forwards;
+}
+
+@keyframes base-logo-appear {
+  0% { opacity: 0; filter: blur(10px); transform: scale(0.9); }
+  100% { opacity: 0.95; filter: blur(0); transform: scale(1); }
+}
+
+@keyframes fade-in-tracers {
+  to { opacity: 1; }
+}
+
+@keyframes trace-left {
+  0% { transform: rotate(0deg); opacity: 0; }
+  2% { opacity: 1; }
+  98% { opacity: 1; }
+  100% { transform: rotate(180deg); opacity: 0; }
+}
+
+@keyframes trace-right {
+  0% { transform: rotate(0deg); opacity: 0; }
+  2% { opacity: 1; }
+  98% { opacity: 1; }
+  100% { transform: rotate(-180deg); opacity: 0; }
 }
 
 /* -------------------------------------------------------------

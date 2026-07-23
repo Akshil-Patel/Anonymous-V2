@@ -400,6 +400,27 @@ document.querySelectorAll('.nav-node').forEach(node => {
 // Automatic boot sequence without requiring click-based login
 let bootTimer = null;
 
+const bootLogs = [
+  { type: 'ok', txt: 'Started LVM2 metadata daemon.' },
+  { type: 'ok', txt: 'Mounted /sys/kernel/config.' },
+  { type: 'ok', txt: 'Started Cryptography Setup for cryptswap.' },
+  { type: 'load', txt: 'Loading Anonymous Protocol v2.0 Kernel...' },
+  { type: 'ok', txt: 'Initialized Web Audio Synthesizer Engine.' },
+  { type: 'ok', txt: 'Loaded Custom Vector Reticle Cursor modules.' },
+  { type: 'ok', txt: 'Attached telemetry probes to port 443.' },
+  { type: 'load', txt: 'Scanning local cybersecurity exhibits...' },
+  { type: 'ok', txt: 'Morris Worm Exhibit detected [1988]' },
+  { type: 'ok', txt: 'ILOVEYOU Trojan Exhibit detected [2000]' },
+  { type: 'ok', txt: 'Stuxnet Cyber Weapon Exhibit detected [2010]' },
+  { type: 'ok', txt: 'Mirai IoT Botnet Exhibit detected [2016]' },
+  { type: 'ok', txt: 'WannaCry Ransomware Exhibit detected [2017]' },
+  { type: 'ok', txt: 'SolarWinds Supply Chain Exhibit detected [2020]' },
+  { type: 'load', txt: 'Opening secure websocket link to server...' },
+  { type: 'ok', txt: 'Connection established. Handshake verified.' },
+  { type: 'ok', txt: 'Anonymous GRUB boot up complete.' },
+  { type: 'load', txt: 'SYSTEM ENGAGED. STARTING COGNITIVE HUD...' }
+];
+
 function startHackerBootSequence(clickX, clickY) {
   if (state.phase !== 1) return;
   if (bootTimer) clearTimeout(bootTimer);
@@ -458,12 +479,45 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Auto-boot system after 2.5 seconds of the logo loader animation
-bootTimer = setTimeout(() => {
-  if (state.phase === 1) {
-    startHackerBootSequence(window.innerWidth / 2, window.innerHeight / 2);
-  }
-}, 2500);
+// Dynamic print sequence on document load
+document.addEventListener('DOMContentLoaded', () => {
+  const logContainer = document.getElementById('boot-terminal-log');
+  if (!logContainer) return;
+  
+  let currentLogIdx = 0;
+  
+  const printNextLog = () => {
+    if (state.phase !== 1) return;
+    
+    if (currentLogIdx >= bootLogs.length) {
+      bootTimer = setTimeout(() => {
+        if (state.phase === 1) {
+          startHackerBootSequence(window.innerWidth / 2, window.innerHeight / 2);
+        }
+      }, 500);
+      return;
+    }
+    
+    const log = bootLogs[currentLogIdx];
+    const line = document.createElement('div');
+    line.className = 'boot-log-line';
+    
+    if (log.type === 'ok') {
+      line.innerHTML = `<span class="status-ok">[  OK  ]</span>${log.txt}`;
+    } else {
+      line.innerHTML = `<span class="status-load">[ LOAD ]</span>${log.txt}`;
+    }
+    
+    logContainer.appendChild(line);
+    logContainer.scrollTop = logContainer.scrollHeight;
+    currentLogIdx++;
+    
+    const nextDelay = log.type === 'load' ? 180 : (30 + Math.random() * 60);
+    bootTimer = setTimeout(printNextLog, nextDelay);
+  };
+  
+  setTimeout(printNextLog, 400);
+});
 
 // Global AudioContext Resumer for first user interaction (bypasses browser autoplay policy)
 const resumeAudioOnInteraction = () => {

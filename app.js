@@ -1282,7 +1282,7 @@ function startLoopingBuzzerAndAmbientFX(type) {
     gateGain.gain.setValueAtTime(0.5, now); // Offsets between [0, 1]
     
     activeBuzzerGain.gain.setValueAtTime(0, now);
-    activeBuzzerGain.gain.linearRampToValueAtTime(0.42, now + 0.05); // Louder volume!
+    activeBuzzerGain.gain.linearRampToValueAtTime(0.26, now + 0.05); // Balanced buzzer volume
     
     // Connections
     activeBuzzerLfo.connect(lfoGain);

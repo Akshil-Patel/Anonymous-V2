@@ -78,18 +78,12 @@
   <!-- Volumetric Lighting Fog Overlay -->
   <div id="volumetric-fog"></div>
 
-  <!-- Phase 1: Dormant State Screen (Automatic Kali-Style Boot) -->
+  <!-- Phase 1: Dormant State Screen (Clean Outline Glow Loader) -->
   <div id="dormant-screen" class="active">
-    <div class="boot-logo-wrapper">
-      <img src="logo.png" alt="Anonymous Logo" class="boot-logo-img">
-      <svg class="boot-spinner-svg" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="46" class="spinner-track"></circle>
-        <circle cx="50" cy="50" r="46" class="spinner-glow"></circle>
-      </svg>
+    <div class="glow-logo-container">
+      <div class="glow-logo-base"></div>
+      <div class="glow-logo-active"></div>
     </div>
-    
-    <!-- Left-side Terminal Boot Logs -->
-    <div class="boot-terminal-log" id="boot-terminal-log"></div>
   </div>
 
   <!-- Main HUD Layer (Revealed during Phase 4) -->

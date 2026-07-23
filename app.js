@@ -458,12 +458,12 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Auto-boot system after 2.6 seconds of logo animation
+// Auto-boot system after 3.8 seconds of logo animation (exactly 1 sweep)
 bootTimer = setTimeout(() => {
   if (state.phase === 1) {
     startHackerBootSequence(window.innerWidth / 2, window.innerHeight / 2);
   }
-}, 2600);
+}, 3800);
 
 // Global AudioContext Resumer for first user interaction (bypasses browser autoplay policy)
 const resumeAudioOnInteraction = () => {

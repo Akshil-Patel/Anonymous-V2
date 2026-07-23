@@ -349,31 +349,32 @@ body.cursor-freakout .dot-visual {
   mask-position: center;
 }
 
-/* Faint static silhouette outline */
+/* Static solid white logo outline */
 .glow-logo-base {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: #ffffff;
+  opacity: 0.95;
   z-index: 1;
 }
 
-/* Rising outline glow sweep (fixed length gradient band) */
+/* Rising outline glow sweep (tiny, subtle shiny gradient band) */
 .glow-logo-active {
   background-image: linear-gradient(
     to top,
     rgba(96, 165, 250, 0) 0%,
-    rgba(96, 165, 250, 0.4) 30%,
-    #60a5fa 50%,
-    #ffffff 52%,
-    #60a5fa 54%,
-    rgba(96, 165, 250, 0.4) 70%,
+    rgba(96, 165, 250, 0.3) 25%,
+    #60a5fa 48%,
+    #ffffff 50%,
+    #60a5fa 52%,
+    rgba(96, 165, 250, 0.3) 75%,
     rgba(96, 165, 250, 0) 100%
   );
-  background-size: 100% 120px;
+  background-size: 100% 45px; /* Tiny, subtle shine band */
   background-repeat: no-repeat;
   background-position: 0 350px;
-  filter: drop-shadow(0 0 16px rgba(96, 165, 250, 0.85));
+  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.7));
   z-index: 2;
   will-change: background-position;
-  animation: rise-glow-sweep 2.6s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  animation: rise-glow-sweep 3.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; /* Runs exactly once */
 }
 
 @keyframes rise-glow-sweep {

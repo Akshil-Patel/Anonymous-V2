@@ -322,127 +322,85 @@ body.cursor-freakout .dot-visual {
 }
 
 /* -------------------------------------------------------------
-   MINIMALIST CYBER LOADER SYSTEM
+   MINIMAL QUANTUM ORBIT LOADER
    ------------------------------------------------------------- */
-.minimal-loader-container {
+.quantum-loader {
   position: relative;
-  width: 260px;
-  height: 260px;
+  width: 220px;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
-.loader-ambient-glow {
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%);
-  animation: ambient-pulse 3s ease-in-out infinite;
-}
-
-.loader-reticle-ring {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  animation: reticle-spin 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.reticle-svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.reticle-track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 1;
-}
-
-.reticle-tick {
-  stroke: rgba(59, 130, 246, 0.6);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-
-.reticle-arc {
-  fill: none;
-  stroke: #3b82f6;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-dasharray: 80 480;
-  filter: drop-shadow(0 0 10px #3b82f6);
-}
-
-.loader-logo-wrap {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: logo-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.loader-logo-img {
-  width: 100%;
-  height: 100%;
+.quantum-logo {
+  width: 130px;
+  height: 130px;
   object-fit: contain;
-  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 25px rgba(59, 130, 246, 0.5));
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 25px rgba(59, 130, 246, 0.45));
+  z-index: 2;
+  animation: quantum-logo-pop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.loader-logo-shine {
+.quantum-orbit {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    transparent 40%,
-    rgba(255, 255, 255, 0.85) 50%,
-    rgba(59, 130, 246, 0.7) 55%,
-    transparent 65%,
-    transparent 100%
-  );
-  background-size: 250% 250%;
-  background-position: 180% -80%;
-  -webkit-mask-image: url('logo.png');
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-image: url('logo.png');
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mix-blend-mode: overlay;
-  animation: shine-sweep 3s ease-in-out 0.5s infinite;
+  border-radius: 50%;
+  pointer-events: none;
 }
 
-@keyframes ambient-pulse {
-  0%, 100% { transform: scale(0.9); opacity: 0.5; }
-  50% { transform: scale(1.15); opacity: 0.9; }
+.orbit-1 {
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  animation: spin-clockwise 2.8s linear infinite;
 }
 
-@keyframes reticle-spin {
+.orbit-2 {
+  width: 82%;
+  height: 82%;
+  top: 9%;
+  left: 9%;
+  border: 1px dashed rgba(59, 130, 246, 0.18);
+  animation: spin-counter-clockwise 2.0s linear infinite;
+}
+
+.orbit-node {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #60a5fa;
+  box-shadow: 0 0 10px #3b82f6, 0 0 20px #60a5fa;
+}
+
+.orbit-2 .orbit-node {
+  top: auto;
+  bottom: -4px;
+  width: 6px;
+  height: 6px;
+  background-color: #38bdf8;
+  box-shadow: 0 0 8px #0284c7, 0 0 16px #38bdf8;
+}
+
+@keyframes spin-clockwise {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-@keyframes logo-reveal {
-  0% { opacity: 0; transform: scale(0.92); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes spin-counter-clockwise {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
 }
 
-@keyframes shine-sweep {
-  0% { background-position: 180% -80%; }
-  60%, 100% { background-position: -80% 180%; }
+@keyframes quantum-logo-pop {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 /* -------------------------------------------------------------

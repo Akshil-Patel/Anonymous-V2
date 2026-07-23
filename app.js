@@ -458,12 +458,12 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Auto-boot system after 3.0 seconds of clean cyber loader animation
+// Auto-boot system after 2.8 seconds of quantum orbit loader animation
 bootTimer = setTimeout(() => {
   if (state.phase === 1) {
     startHackerBootSequence(window.innerWidth / 2, window.innerHeight / 2);
   }
-}, 3000);
+}, 2800);
 
 // Global AudioContext Resumer for first user interaction (bypasses browser autoplay policy)
 const resumeAudioOnInteraction = () => {

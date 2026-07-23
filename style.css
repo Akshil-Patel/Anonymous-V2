@@ -321,19 +321,98 @@ body.cursor-freakout .dot-visual {
   pointer-events: none;
 }
 
-.glow-logo-container {
+/* -------------------------------------------------------------
+   MINIMALIST CYBER LOADER SYSTEM
+   ------------------------------------------------------------- */
+.minimal-loader-container {
   position: relative;
-  width: 280px;
-  height: 280px;
+  width: 260px;
+  height: 260px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
-.glow-logo-base {
+.loader-ambient-glow {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%);
+  animation: ambient-pulse 3s ease-in-out infinite;
+}
+
+.loader-reticle-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: reticle-spin 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.reticle-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.reticle-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.reticle-tick {
+  stroke: rgba(59, 130, 246, 0.6);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.reticle-arc {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 80 480;
+  filter: drop-shadow(0 0 10px #3b82f6);
+}
+
+.loader-logo-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: logo-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.loader-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 25px rgba(59, 130, 246, 0.5));
+}
+
+.loader-logo-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(59, 130, 246, 0.7) 55%,
+    transparent 65%,
+    transparent 100%
+  );
+  background-size: 250% 250%;
+  background-position: 180% -80%;
   -webkit-mask-image: url('logo.png');
   -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -342,74 +421,28 @@ body.cursor-freakout .dot-visual {
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
-  background-color: #ffffff;
-  opacity: 0;
-  z-index: 1;
-  animation: base-logo-appear 0.8s ease-out forwards;
+  mix-blend-mode: overlay;
+  animation: shine-sweep 3s ease-in-out 0.5s infinite;
 }
 
-.tracer-container {
-  position: absolute;
-  top: -15px; left: -15px;
-  width: calc(100% + 30px);
-  height: calc(100% + 30px);
-  z-index: 2;
-  pointer-events: none;
+@keyframes ambient-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.5; }
+  50% { transform: scale(1.15); opacity: 0.9; }
 }
 
-.glow-logo-tracer {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  border-radius: 50%;
-  /* Pure blue/cyan glowing aura orbiting the outside of the logo */
-  filter: drop-shadow(0 0 10px #00e5ff) drop-shadow(0 0 25px #0066ff);
+@keyframes reticle-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.tracer-left {
-  background: conic-gradient(
-    from 180deg,
-    transparent 0deg,
-    transparent 310deg,
-    rgba(0, 102, 255, 0.4) 330deg,
-    #00e5ff 352deg,
-    #0066ff 360deg
-  );
-  animation: trace-left 3.5s linear 1.0s forwards;
+@keyframes logo-reveal {
+  0% { opacity: 0; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
-.tracer-right {
-  background: conic-gradient(
-    from 180deg,
-    #0066ff 0deg,
-    #00e5ff 8deg,
-    rgba(0, 102, 255, 0.4) 30deg,
-    transparent 50deg,
-    transparent 360deg
-  );
-  animation: trace-right 3.5s linear 1.0s forwards;
-}
-
-@keyframes base-logo-appear {
-  0% { opacity: 0; filter: blur(10px); transform: scale(0.9); }
-  100% { opacity: 1.0; filter: blur(0); transform: scale(1); }
-}
-
-@keyframes fade-in-tracers {
-  to { opacity: 1; }
-}
-
-@keyframes trace-left {
-  0% { transform: rotate(0deg); opacity: 0; }
-  2% { opacity: 1; }
-  98% { opacity: 1; }
-  100% { transform: rotate(180deg); opacity: 0; }
-}
-
-@keyframes trace-right {
-  0% { transform: rotate(0deg); opacity: 0; }
-  2% { opacity: 1; }
-  98% { opacity: 1; }
-  100% { transform: rotate(-180deg); opacity: 0; }
+@keyframes shine-sweep {
+  0% { background-position: 180% -80%; }
+  60%, 100% { background-position: -80% 180%; }
 }
 
 /* -------------------------------------------------------------

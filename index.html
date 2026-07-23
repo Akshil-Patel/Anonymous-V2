@@ -78,16 +78,28 @@
   <!-- Volumetric Lighting Fog Overlay -->
   <div id="volumetric-fog"></div>
 
-  <!-- Phase 1: Dormant State Screen (Clean Outline Glow Loader) -->
+  <!-- Phase 1: Dormant State Screen (Clean Minimal Cyber Loader) -->
   <div id="dormant-screen" class="active">
-    <div class="glow-logo-container">
-      <!-- White logo fades in first -->
-      <div class="glow-logo-base"></div>
+    <div class="minimal-loader-container">
+      <!-- Ambient Glow Behind Logo -->
+      <div class="loader-ambient-glow"></div>
       
-      <!-- The outer rim tracers -->
-      <div class="tracer-container">
-        <div class="glow-logo-tracer tracer-left"></div>
-        <div class="glow-logo-tracer tracer-right"></div>
+      <!-- Outer Reticle Ring with Crosshairs -->
+      <div class="loader-reticle-ring">
+        <svg class="reticle-svg" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" class="reticle-track"></circle>
+          <circle cx="100" cy="100" r="90" class="reticle-arc"></circle>
+          <line x1="100" y1="2" x2="100" y2="12" class="reticle-tick"></line>
+          <line x1="100" y1="188" x2="100" y2="198" class="reticle-tick"></line>
+          <line x1="2" y1="100" x2="12" y2="100" class="reticle-tick"></line>
+          <line x1="188" y1="100" x2="198" y2="100" class="reticle-tick"></line>
+        </svg>
+      </div>
+
+      <!-- Centered Logo with Sweep Accent -->
+      <div class="loader-logo-wrap">
+        <img src="logo.png" alt="Anonymous Logo" class="loader-logo-img">
+        <div class="loader-logo-shine"></div>
       </div>
     </div>
   </div>

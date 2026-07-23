@@ -144,20 +144,20 @@ function playClickSound(freq = 600, decay = 0.05, gainVal = 0.12) {
   const osc1 = audioCtx.createOscillator();
   const osc2 = audioCtx.createOscillator();
   const clickGain = audioCtx.createGain();
-  
+
   osc1.type = 'sine';
   osc1.frequency.setValueAtTime(freq, now);
-  
+
   osc2.type = 'sine';
   osc2.frequency.setValueAtTime(freq * 1.5, now); // Harmonious fifth chime
-  
+
   clickGain.gain.setValueAtTime(gainVal, now);
   clickGain.gain.exponentialRampToValueAtTime(0.0001, now + decay);
-  
+
   osc1.connect(clickGain);
   osc2.connect(clickGain);
   clickGain.connect(masterGain);
-  
+
   osc1.start(now);
   osc2.start(now);
   osc1.stop(now + decay + 0.05);
@@ -459,11 +459,11 @@ audioToggleBtn.addEventListener('click', (e) => {
   if (state.soundEnabled) {
     document.getElementById('audio-label').textContent = 'SOUND: ON';
     audioToggleBtn.classList.add('audio-active');
-    
+
     // Resume audio contexts if suspended
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     if (archiveAudioCtx && archiveAudioCtx.state === 'suspended') archiveAudioCtx.resume();
-    
+
     // Restart background sequencer if hallway is active
     const badge = document.getElementById('archive-year-badge');
     if (badge && badge.classList.contains('is-visible')) {
@@ -473,11 +473,11 @@ audioToggleBtn.addEventListener('click', (e) => {
   } else {
     document.getElementById('audio-label').textContent = 'SOUND: OFF';
     audioToggleBtn.classList.remove('audio-active');
-    
+
     // Immediately shut down all sound engines
     stopArchiveAmbientDrone();
     stopLoopingBuzzerAndAmbientFX();
-    
+
     if (audioCtx) audioCtx.suspend();
     if (archiveAudioCtx) archiveAudioCtx.suspend();
   }
@@ -1133,56 +1133,56 @@ function playEpicSequencerStep() {
   if (!archiveAudioCtx || !isMusicSequencerActive) return;
   try {
     const now = archiveAudioCtx.currentTime;
-    
+
     // 1. Driving Arpeggiated Plucks (sawtooth cellos)
     const chordIndex = Math.floor(musicStep / 16) % arpeggioProgression.length;
     const notes = arpeggioProgression[chordIndex];
     const noteFreq = notes[musicStep % notes.length];
-    
+
     const bassOsc = archiveAudioCtx.createOscillator();
     const bassGain = archiveAudioCtx.createGain();
     const bassFilter = archiveAudioCtx.createBiquadFilter();
-    
+
     bassOsc.type = 'sawtooth';
     bassOsc.frequency.setValueAtTime(noteFreq, now);
-    
+
     // Lowpass filter opens up dramatically under hover tension!
     bassFilter.type = 'lowpass';
     bassFilter.frequency.setValueAtTime(isTensionHover ? 1100 : 500, now);
     if (isTensionHover) {
       bassFilter.Q.setValueAtTime(4, now);
     }
-    
+
     bassGain.gain.setValueAtTime(0, now);
     bassGain.gain.linearRampToValueAtTime(isTensionHover ? 0.05 : 0.025, now + 0.02);
     bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-    
+
     bassOsc.connect(bassFilter);
     bassFilter.connect(bassGain);
     bassGain.connect(archiveAudioCtx.destination);
-    
+
     bassOsc.start(now);
     bassOsc.stop(now + 0.28);
-    
+
     // 2. Cinematic Taiko Drum Beats (quarter notes)
     if (musicStep % 2 === 0) {
       const drumOsc = archiveAudioCtx.createOscillator();
       const drumGain = archiveAudioCtx.createGain();
-      
+
       drumOsc.type = 'sine';
       drumOsc.frequency.setValueAtTime(130, now);
       drumOsc.frequency.exponentialRampToValueAtTime(42, now + 0.12);
-      
+
       drumGain.gain.setValueAtTime(isTensionHover ? 0.22 : 0.16, now);
       drumGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
-      
+
       drumOsc.connect(drumGain);
       drumGain.connect(archiveAudioCtx.destination);
-      
+
       drumOsc.start(now);
       drumOsc.stop(now + 0.6);
     }
-    
+
     // 3. Detuned Soaring Epic Chords (bar sweeps)
     if (musicStep % 16 === 0) {
       const chordNotes = arpeggioProgression[chordIndex];
@@ -1190,31 +1190,31 @@ function playEpicSequencerStep() {
         const strOsc1 = archiveAudioCtx.createOscillator();
         const strOsc2 = archiveAudioCtx.createOscillator();
         const strGain = archiveAudioCtx.createGain();
-        
+
         strOsc1.type = 'triangle';
         strOsc2.type = 'sawtooth';
-        
+
         // detuned strings soaring in higher register
         strOsc1.frequency.setValueAtTime(freq * 2 - 2, now);
         strOsc2.frequency.setValueAtTime(freq * 2 + 2, now);
-        
+
         strGain.gain.setValueAtTime(0, now);
         strGain.gain.linearRampToValueAtTime(0.016, now + 1.2);
         strGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.2);
-        
+
         strOsc1.connect(strGain);
         strOsc2.connect(strGain);
         strGain.connect(archiveAudioCtx.destination);
-        
+
         strOsc1.start(now);
         strOsc2.start(now);
         strOsc1.stop(now + 4.5);
         strOsc2.stop(now + 4.5);
       });
     }
-    
+
     musicStep++;
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function startArchiveAmbientDrone() {
@@ -1249,9 +1249,9 @@ let activeAmbientIntervals = [];
 function startLoopingBuzzerAndAmbientFX(type) {
   initArchiveAudio();
   if (!archiveAudioCtx || !state.soundEnabled) return;
-  
+
   const now = archiveAudioCtx.currentTime;
-  
+
   // 1. High-intensity Industrial Emergency Siren Buzzer (FM Tremolo + Square Gated Pulse)
   try {
     activeBuzzerOsc = archiveAudioCtx.createOscillator();
@@ -1262,45 +1262,45 @@ function startLoopingBuzzerAndAmbientFX(type) {
     const gateGain = archiveAudioCtx.createGain();
     activeBuzzerGain = archiveAudioCtx.createGain();
     const bandpass = archiveAudioCtx.createBiquadFilter();
-    
+
     activeBuzzerOsc.type = 'sawtooth';
     activeBuzzerOsc.frequency.setValueAtTime(115, now);
-    
+
     activeBuzzerLfo.type = 'square';
     activeBuzzerLfo.frequency.setValueAtTime(15, now); // 15Hz tremolo buzzer modulation
     lfoGain.gain.setValueAtTime(120, now);
-    
+
     bandpass.type = 'bandpass';
     bandpass.frequency.setValueAtTime(880, now);
     bandpass.Q.setValueAtTime(4.5, now);
-    
+
     // Gating pulse: 2.2 Hz (alarm rate)
     activeBuzzerGateLfo.type = 'square';
     activeBuzzerGateLfo.frequency.setValueAtTime(2.2, now);
-    
+
     gateLfoGain.gain.setValueAtTime(0.5, now);
     gateGain.gain.setValueAtTime(0.5, now); // Offsets between [0, 1]
-    
+
     activeBuzzerGain.gain.setValueAtTime(0, now);
-    activeBuzzerGain.gain.linearRampToValueAtTime(0.26, now + 0.05); // Balanced buzzer volume
-    
+    activeBuzzerGain.gain.linearRampToValueAtTime(0.26, now + 1); // Balanced buzzer volume
+
     // Connections
     activeBuzzerLfo.connect(lfoGain);
     lfoGain.connect(activeBuzzerOsc.frequency);
     activeBuzzerOsc.connect(bandpass);
-    
+
     activeBuzzerGateLfo.connect(gateLfoGain);
     gateLfoGain.connect(gateGain.gain);
-    
+
     bandpass.connect(gateGain);
     gateGain.connect(activeBuzzerGain);
     activeBuzzerGain.connect(archiveAudioCtx.destination);
-    
+
     activeBuzzerOsc.start(now);
     activeBuzzerLfo.start(now);
     activeBuzzerGateLfo.start(now);
-  } catch (e) {}
-  
+  } catch (e) { }
+
   // 2. Extra Unique Subtle Sound Effects for each Attack Animation
   try {
     if (type === 'morris') {
@@ -1310,53 +1310,53 @@ function startLoopingBuzzerAndAmbientFX(type) {
         const slitherOsc = archiveAudioCtx.createOscillator();
         const slitherGain = archiveAudioCtx.createGain();
         const slitherFilter = archiveAudioCtx.createBiquadFilter();
-        
+
         slitherOsc.type = 'triangle';
         slitherOsc.frequency.setValueAtTime(60 + Math.random() * 80, archiveAudioCtx.currentTime);
         slitherOsc.frequency.exponentialRampToValueAtTime(220 + Math.random() * 100, archiveAudioCtx.currentTime + 0.15);
-        
+
         slitherFilter.type = 'bandpass';
         slitherFilter.frequency.setValueAtTime(400, archiveAudioCtx.currentTime);
-        
+
         slitherGain.gain.setValueAtTime(0.024, archiveAudioCtx.currentTime);
         slitherGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.18);
-        
+
         slitherOsc.connect(slitherFilter);
         slitherFilter.connect(slitherGain);
         slitherGain.connect(archiveAudioCtx.destination);
-        
+
         slitherOsc.start();
         slitherOsc.stop(archiveAudioCtx.currentTime + 0.2);
       };
-      
+
       playSlither();
       const interval = setInterval(playSlither, 140);
       activeAmbientIntervals.push(interval);
-      
+
     } else if (type === 'iloveyou') {
       // ILOVEYOU: glitchy falling heart crystalline drop pings
       const playHeartDrop = () => {
         if (!isMusicSequencerActive || !state.soundEnabled) return;
         const dropOsc = archiveAudioCtx.createOscillator();
         const dropGain = archiveAudioCtx.createGain();
-        
+
         dropOsc.type = 'sine';
         dropOsc.frequency.setValueAtTime(1600 + Math.random() * 1200, archiveAudioCtx.currentTime);
-        
+
         dropGain.gain.setValueAtTime(0.018, archiveAudioCtx.currentTime);
         dropGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.45);
-        
+
         dropOsc.connect(dropGain);
         dropGain.connect(archiveAudioCtx.destination);
-        
+
         dropOsc.start();
         dropOsc.stop(archiveAudioCtx.currentTime + 0.5);
       };
-      
+
       playHeartDrop();
       const interval = setInterval(playHeartDrop, 280);
       activeAmbientIntervals.push(interval);
-      
+
     } else if (type === 'stuxnet') {
       // Stuxnet: heavy resonant rotating motor centrifuge vibration
       const motorOsc1 = archiveAudioCtx.createOscillator();
@@ -1364,120 +1364,120 @@ function startLoopingBuzzerAndAmbientFX(type) {
       const motorGain = archiveAudioCtx.createGain();
       const motorLfo = archiveAudioCtx.createOscillator();
       const motorLfoGain = archiveAudioCtx.createGain();
-      
+
       motorOsc1.type = 'triangle';
       motorOsc1.frequency.setValueAtTime(52, now);
-      
+
       motorOsc2.type = 'sine';
       motorOsc2.frequency.setValueAtTime(54, now);
-      
+
       motorLfo.type = 'sine';
       motorLfo.frequency.setValueAtTime(4, now); // 4Hz rotating phase sweeps
-      
+
       motorLfoGain.gain.setValueAtTime(0.012, now);
-      
+
       motorGain.gain.setValueAtTime(0.034, now);
-      
+
       motorLfo.connect(motorLfoGain);
       motorLfoGain.connect(motorGain.gain);
-      
+
       motorOsc1.connect(motorGain);
       motorOsc2.connect(motorGain);
       motorGain.connect(archiveAudioCtx.destination);
-      
+
       motorOsc1.start(now);
       motorOsc2.start(now);
       motorLfo.start(now);
-      
+
       activeAmbientFxOscs.push(motorOsc1, motorOsc2, motorLfo);
       activeAmbientFxGains.push(motorGain);
-      
+
     } else if (type === 'mirai') {
       // Mirai: rapid scanning DDoS network ping laser sweeps
       const playMiraiPing = () => {
         if (!isMusicSequencerActive || !state.soundEnabled) return;
         const pingOsc = archiveAudioCtx.createOscillator();
         const pingGain = archiveAudioCtx.createGain();
-        
+
         pingOsc.type = 'sine';
         pingOsc.frequency.setValueAtTime(1400, archiveAudioCtx.currentTime);
         pingOsc.frequency.exponentialRampToValueAtTime(500, archiveAudioCtx.currentTime + 0.08);
-        
+
         pingGain.gain.setValueAtTime(0.02, archiveAudioCtx.currentTime);
         pingGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.08);
-        
+
         pingOsc.connect(pingGain);
         pingGain.connect(archiveAudioCtx.destination);
-        
+
         pingOsc.start();
         pingOsc.stop(archiveAudioCtx.currentTime + 0.1);
       };
-      
+
       playMiraiPing();
       const interval = setInterval(playMiraiPing, 220);
       activeAmbientIntervals.push(interval);
-      
+
     } else if (type === 'wannacry') {
       // WannaCry: low heavy EternalBlue alarm drone
       const droneOsc1 = archiveAudioCtx.createOscillator();
       const droneOsc2 = archiveAudioCtx.createOscillator();
       const droneGain = archiveAudioCtx.createGain();
       const filter = archiveAudioCtx.createBiquadFilter();
-      
+
       droneOsc1.type = 'sawtooth';
       droneOsc1.frequency.setValueAtTime(51.91, now); // G#1
-      
+
       droneOsc2.type = 'sawtooth';
       droneOsc2.frequency.setValueAtTime(77.78, now); // D#2
-      
+
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(180, now);
-      
+
       droneGain.gain.setValueAtTime(0, now);
       droneGain.gain.linearRampToValueAtTime(0.048, now + 0.2);
-      
+
       droneOsc1.connect(filter);
       droneOsc2.connect(filter);
       filter.connect(droneGain);
       droneGain.connect(archiveAudioCtx.destination);
-      
+
       droneOsc1.start(now);
       droneOsc2.start(now);
-      
+
       activeAmbientFxOscs.push(droneOsc1, droneOsc2);
       activeAmbientFxGains.push(droneGain);
-      
+
     } else if (type === 'solarwinds') {
       // SolarWinds: satellite uplink telemetry data sweeps
       const playSolarSweep = () => {
         if (!isMusicSequencerActive || !state.soundEnabled) return;
         const sweepOsc = archiveAudioCtx.createOscillator();
         const sweepGain = archiveAudioCtx.createGain();
-        
+
         sweepOsc.type = 'square';
         sweepOsc.frequency.setValueAtTime(2800, archiveAudioCtx.currentTime);
         sweepOsc.frequency.exponentialRampToValueAtTime(3600, archiveAudioCtx.currentTime + 0.05);
-        
+
         sweepGain.gain.setValueAtTime(0.009, archiveAudioCtx.currentTime);
         sweepGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.06);
-        
+
         sweepOsc.connect(sweepGain);
         sweepGain.connect(archiveAudioCtx.destination);
-        
+
         sweepOsc.start();
         sweepOsc.stop(archiveAudioCtx.currentTime + 0.08);
       };
-      
+
       playSolarSweep();
       const interval = setInterval(playSolarSweep, 180);
       activeAmbientIntervals.push(interval);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function stopLoopingBuzzerAndAmbientFX() {
   const now = archiveAudioCtx ? archiveAudioCtx.currentTime : 0;
-  
+
   // Stop buzzer alarm loop smoothly
   try {
     if (activeBuzzerGain && archiveAudioCtx) {
@@ -1489,23 +1489,23 @@ function stopLoopingBuzzerAndAmbientFX() {
       if (activeBuzzerLfo) { activeBuzzerLfo.stop(); activeBuzzerLfo = null; }
       if (activeBuzzerGateLfo) { activeBuzzerGateLfo.stop(); activeBuzzerGateLfo = null; }
     }, 150);
-  } catch (e) {}
-  
+  } catch (e) { }
+
   // Clear any active interval loops
   activeAmbientIntervals.forEach(clearInterval);
   activeAmbientIntervals = [];
-  
+
   // Stop ambient unique oscillators
   activeAmbientFxOscs.forEach(osc => {
-    try { osc.stop(); } catch (e) {}
+    try { osc.stop(); } catch (e) { }
   });
   activeAmbientFxOscs = [];
-  
+
   activeAmbientFxGains.forEach(gain => {
     try {
       gain.gain.cancelScheduledValues(now);
       gain.gain.linearRampToValueAtTime(0, now + 0.1);
-    } catch (e) {}
+    } catch (e) { }
   });
   activeAmbientFxGains = [];
 }
@@ -1987,14 +1987,14 @@ function renderEffectLoop() {
       ctx.shadowBlur = 0;
     });
   } else if (activeEffectType === 'wannacry') {
-    // Render EternalBlue Red Shockwave Rings
+    // Render EternalBlue Red Shockwave Rings centered to the screen
     effectParticles.forEach(p => {
       p.r += 2.5;
       if (p.r > p.maxR) p.r = 0;
       ctx.strokeStyle = `rgba(225, 29, 72, ${1 - p.r / p.maxR})`;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(effectMouseX || w / 2, effectMouseY || h / 2, p.r, 0, Math.PI * 2);
+      ctx.arc(w / 2, h / 2, p.r, 0, Math.PI * 2);
       ctx.stroke();
     });
   } else if (activeEffectType === 'solarwinds') {
@@ -2083,7 +2083,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Dynamic initialization for static + async loaded elements
   addHoverListeners();
-  
+
   // Re-observe periodically or on DOM changes
   const observer = new MutationObserver(() => {
     addHoverListeners();

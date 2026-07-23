@@ -20,13 +20,13 @@ let height = (canvas.height = window.innerHeight);
 
 // Navigation Nodes Coordinates (percentages relative to viewport)
 const nodeDefs = {
-  command: { id: 'node-command', px: 0.45, py: 0.22, label: 'COMMAND CENTER' },
-  operations: { id: 'node-operations', px: 0.2, py: 0.34, label: 'OPERATIONS' },
-  intelligence: { id: 'node-intelligence', px: 0.75, py: 0.26, label: 'INTELLIGENCE' },
-  agents: { id: 'node-agents', px: 0.16, py: 0.74, label: 'AGENTS' },
-  'cyber-lab': { id: 'node-cyber-lab', px: 0.38, py: 0.76, label: 'CYBER LAB' },
-  forensics: { id: 'node-forensics', px: 0.62, py: 0.72, label: 'FORENSICS' },
-  vault: { id: 'node-vault', px: 0.84, py: 0.78, label: 'VAULT' },
+  command: { id: 'node-command', px: 0.50, py: 0.24, label: 'COMMAND CENTER' },
+  operations: { id: 'node-operations', px: 0.15, py: 0.34, label: 'OPERATIONS' },
+  intelligence: { id: 'node-intelligence', px: 0.85, py: 0.34, label: 'INTELLIGENCE' },
+  agents: { id: 'node-agents', px: 0.12, py: 0.76, label: 'AGENTS' },
+  'cyber-lab': { id: 'node-cyber-lab', px: 0.32, py: 0.84, label: 'CYBER LAB' },
+  forensics: { id: 'node-forensics', px: 0.68, py: 0.84, label: 'FORENSICS' },
+  vault: { id: 'node-vault', px: 0.88, py: 0.76, label: 'VAULT' },
 };
 
 // Map nodes with screen pixels
@@ -46,7 +46,7 @@ function calculateNodePositions() {
   for (const [key, def] of Object.entries(nodeDefs)) {
     const x = def.px * width;
     const y = def.py * height;
-    
+
     if (isFirstTime) {
       nodes[key] = {
         id: def.id,
@@ -76,18 +76,18 @@ const connectionDefs = [
   { from: 'command', to: 'intelligence' },
   { from: 'command', to: 'cyber-lab' },
   { from: 'command', to: 'forensics' },
-  
+
   { from: 'operations', to: 'agents' },
   { from: 'operations', to: 'cyber-lab' },
   { from: 'operations', to: 'intelligence' }, // horizontal cross link
-  
+
   { from: 'intelligence', to: 'forensics' },
   { from: 'intelligence', to: 'vault' },
-  
+
   { from: 'agents', to: 'cyber-lab' },
   { from: 'cyber-lab', to: 'forensics' },
   { from: 'forensics', to: 'vault' },
-  
+
   // Outer support spiderweb links
   { from: 'agents', to: 'command' },
   { from: 'vault', to: 'command' }
@@ -140,66 +140,73 @@ function initAudio() {
 
 function playClickSound(freq = 600, decay = 0.05, gainVal = 0.12) {
   if (!audioCtx || !state.soundEnabled) return;
+  const now = audioCtx.currentTime;
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const clickGain = audioCtx.createGain();
   
-  const osc = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(freq, now);
   
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(freq * 1.5, now); // Harmonious fifth chime
   
-  gainNode.gain.setValueAtTime(gainVal, audioCtx.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + decay);
+  clickGain.gain.setValueAtTime(gainVal, now);
+  clickGain.gain.exponentialRampToValueAtTime(0.0001, now + decay);
   
-  osc.connect(gainNode);
-  gainNode.connect(masterGain);
+  osc1.connect(clickGain);
+  osc2.connect(clickGain);
+  clickGain.connect(masterGain);
   
-  osc.start();
-  osc.stop(audioCtx.currentTime + decay + 0.05);
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + decay + 0.05);
+  osc2.stop(now + decay + 0.05);
 }
 
 function playSweepSound() {
   if (!audioCtx || !state.soundEnabled) return;
-  
+
   const osc = audioCtx.createOscillator();
   const gainNode = audioCtx.createGain();
-  
+
   osc.type = 'sine';
   osc.frequency.setValueAtTime(80, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(520, audioCtx.currentTime + 2.2);
-  
+
   gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
   gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.3);
   gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.4);
-  
+
   osc.connect(gainNode);
   gainNode.connect(masterGain);
-  
+
   osc.start();
   osc.stop(audioCtx.currentTime + 2.5);
 }
 
 function playAccessGrantedChime() {
   if (!audioCtx || !state.soundEnabled) return;
-  
+
   // Warm electronic major/minor chord sequence (Vercel-like sleek reveal chime)
   const now = audioCtx.currentTime;
   const chord = [220.00, 277.18, 329.63, 440.00, 554.37]; // A major 9 triad (A3, C#4, E4, A4, C#5)
-  
+
   chord.forEach((freq, i) => {
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    
+
     osc.type = 'sine';
     // Arpeggiated entry
     osc.frequency.setValueAtTime(freq, now + i * 0.07);
-    
+
     gainNode.gain.setValueAtTime(0, now + i * 0.07);
     gainNode.gain.linearRampToValueAtTime(0.18, now + i * 0.07 + 0.04);
     gainNode.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.07 + 2.2);
-    
+
     osc.connect(gainNode);
     gainNode.connect(masterGain);
-    
+
     osc.start(now + i * 0.07);
     osc.stop(now + i * 0.07 + 2.4);
   });
@@ -207,34 +214,34 @@ function playAccessGrantedChime() {
 
 function playNodeHoverSound() {
   if (!audioCtx || !state.soundEnabled) return;
-  
+
   const now = audioCtx.currentTime;
   const osc1 = audioCtx.createOscillator();
   const osc2 = audioCtx.createOscillator();
   const gainNode = audioCtx.createGain();
   const filter = audioCtx.createBiquadFilter();
-  
+
   osc1.type = 'sine';
   osc2.type = 'triangle';
-  
+
   // Harmonious cyber beep interval
   osc1.frequency.setValueAtTime(880, now);
   osc1.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
-  
+
   osc2.frequency.setValueAtTime(1320, now);
   osc2.frequency.exponentialRampToValueAtTime(1800, now + 0.08);
-  
+
   filter.type = 'highpass';
   filter.frequency.setValueAtTime(800, now);
-  
+
   gainNode.gain.setValueAtTime(0.03, now);
   gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
-  
+
   osc1.connect(filter);
   osc2.connect(filter);
   filter.connect(gainNode);
   gainNode.connect(masterGain);
-  
+
   osc1.start(now);
   osc2.start(now);
   osc1.stop(now + 0.1);
@@ -313,16 +320,16 @@ document.body.appendChild(detailOverlay);
 // Close sector
 function closeActiveRoom() {
   if (!state.activeRoom) return;
-  
+
   playClickSound(300, 0.08, 0.08);
   state.activeRoom = null;
   state.zoom.targetScale = 1;
   state.zoom.targetX = 0;
   state.zoom.targetY = 0;
-  
+
   detailOverlay.classList.remove('active');
   document.getElementById('hud-container').classList.remove('nav-clicked-transition');
-  
+
   // Re-enable elements
   document.querySelectorAll('.nav-node').forEach(node => {
     node.style.pointerEvents = 'auto';
@@ -337,15 +344,15 @@ window.addEventListener('keydown', (e) => {
 // Setup room navigation clicks
 document.querySelectorAll('.nav-node').forEach(node => {
   // Setup click handler
-  node.addEventListener('click', function(e) {
+  node.addEventListener('click', function (e) {
     e.preventDefault();
     const roomKey = this.getAttribute('data-room');
     const info = roomInfo[roomKey];
     if (!info || state.phase < 5) return;
-    
+
     playClickSound(500, 0.12, 0.1);
     state.activeRoom = roomKey;
-    
+
     // Zoom into node coordinate — camera flies TOWARD the node
     const targetNode = nodes[roomKey];
     const zoomScale = 1.8;
@@ -355,28 +362,28 @@ document.querySelectorAll('.nav-node').forEach(node => {
     // This keeps the node at its screen position while zooming in around it
     state.zoom.targetX = targetNode.x - (targetNode.x * zoomScale);
     state.zoom.targetY = targetNode.y - (targetNode.y * zoomScale);
-    
+
     // Animate DOM HUD out
     document.getElementById('hud-container').classList.add('nav-clicked-transition');
-    
+
     // Populate details card
     document.getElementById('over-title').textContent = info.title;
     document.getElementById('over-sub').textContent = info.subtitle;
     document.getElementById('over-details').textContent = info.details;
     document.getElementById('over-tag').textContent = `HQ_ROOM // ${roomKey.toUpperCase()}`;
-    
+
     // Disable node clicks during overlay
     document.querySelectorAll('.nav-node').forEach(n => {
       n.style.pointerEvents = 'none';
     });
-    
+
     setTimeout(() => {
       detailOverlay.classList.add('active');
     }, 450);
   });
-  
+
   // Setup subtle audio hover feedback
-  node.addEventListener('mouseenter', function() {
+  node.addEventListener('mouseenter', function () {
     if (state.phase < 5) return;
     const now = Date.now();
     if (now - lastHoverSoundTime > 150) {
@@ -393,21 +400,21 @@ document.querySelectorAll('.nav-node').forEach(node => {
 // Phase 1 -> Phase 2 (User clicks anywhere on dormant screen)
 window.addEventListener('click', (e) => {
   if (state.phase !== 1) return;
-  
+
   state.phase = 2;
   initAudio();
-  
+
   // Hide prompt text in loader
   document.getElementById('dormant-prompt').style.opacity = 0;
-  
+
   // Trigger system sound
   playClickSound(200, 0.2, 0.2);
   playSweepSound();
-  
+
   // Setup ignition line coordinates from click to closest node
   const clickX = e.clientX;
   const clickY = e.clientY;
-  
+
   // Add a ripple at click coordinate
   ripples.push({
     x: clickX,
@@ -417,7 +424,7 @@ window.addEventListener('click', (e) => {
     speed: 6.5,
     alpha: 0.8,
   });
-  
+
   // Identify the entry node (closest node to click)
   let closestNodeKey = 'command';
   let minDist = Infinity;
@@ -428,7 +435,7 @@ window.addEventListener('click', (e) => {
       closestNodeKey = key;
     }
   }
-  
+
   // Start line trace towards entry node
   ignitionLines.push({
     startX: clickX,
@@ -438,12 +445,9 @@ window.addEventListener('click', (e) => {
     progress: 0,
     targetNode: closestNodeKey,
   });
-  
+
   // Fade out loader UI
   document.getElementById('dormant-screen').classList.add('fade-out');
-  
-  // Reveal main nav
-  document.getElementById('main-nav').classList.remove('hidden');
 });
 
 // Sound Toggle control
@@ -451,7 +455,7 @@ const audioToggleBtn = document.getElementById('audio-toggle');
 audioToggleBtn.addEventListener('click', (e) => {
   e.stopPropagation(); // Avoid triggering screen clicks
   state.soundEnabled = !state.soundEnabled;
-  
+
   if (state.soundEnabled) {
     document.getElementById('audio-label').textContent = 'SOUND: ON';
     audioToggleBtn.classList.add('audio-active');
@@ -464,13 +468,26 @@ audioToggleBtn.addEventListener('click', (e) => {
 // Activate visualizer animation by default since sound is on initially
 audioToggleBtn.classList.add('audio-active');
 
+// Nav Pill Buttons Sound & Active state interaction
+document.querySelectorAll('.nav-pill-btn').forEach(btn => {
+  btn.addEventListener('mouseenter', () => {
+    playClickSound(800, 0.03, 0.05);
+  });
+  btn.addEventListener('click', () => {
+    if (btn.id === 'audio-toggle') return;
+    playClickSound(1100, 0.06, 0.12);
+    document.querySelectorAll('.nav-pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
 // -------------------------------------------------------------
 // SYSTEM NETWORK PATH GROWTH (Phase 3 Boot Sequence)
 // -------------------------------------------------------------
 function triggerNetworkBoot(startNodeKey) {
   state.phase = 3;
   nodes[startNodeKey].state = 'active';
-  
+
   // Scan connections definition, launch those linked to startNodeKey in either direction
   connectionDefs.forEach(conn => {
     if (conn.from === startNodeKey && nodes[conn.to].state === 'dormant') {
@@ -495,24 +512,24 @@ function triggerNetworkBoot(startNodeKey) {
 
 function updateNetworkBoot() {
   if (state.phase !== 3) return;
-  
+
   // Update normal connections
   activeConnections.forEach(conn => {
     if (conn.progress < 1) {
       conn.progress += conn.speed;
-      
+
       // Add minor signals travelling on this active line
       if (Math.random() < 0.02) {
         addSignalParticle(conn.from, conn.to, conn.progress * 0.9);
       }
-      
+
       if (conn.progress >= 1) {
         conn.progress = 1;
         const targetNodeKey = conn.to;
         const targetNode = nodes[targetNodeKey];
         targetNode.state = 'active';
         playClickSound(300 + Math.random() * 400, 0.04, 0.06);
-        
+
         // Launch nested sub-connections from the newly awakened node
         connectionDefs.forEach(nextConn => {
           if (nextConn.from === targetNodeKey && nodes[nextConn.to].state === 'dormant') {
@@ -536,11 +553,11 @@ function updateNetworkBoot() {
       }
     }
   });
-  
+
   // Check if all nodes are active
   const totalNodes = Object.keys(nodes).length;
   const activeNodes = Object.values(nodes).filter(n => n.state === 'active').length;
-  
+
   if (activeNodes === totalNodes && activeConnections.every(c => c.progress >= 1)) {
     triggerRevealSequence();
   }
@@ -552,18 +569,22 @@ function updateNetworkBoot() {
 // -------------------------------------------------------------
 function triggerRevealSequence() {
   state.phase = 4;
-  
+
   // Brief pause and silent stillness before reveal
   setTimeout(() => {
     // Play warm chord sequence & fade in HUD
     playAccessGrantedChime();
-    
+
     const hud = document.getElementById('hud-container');
     hud.classList.add('revealed');
-    
+
+    // Reveal navbar smoothly when main title is displayed
+    const mainNav = document.getElementById('main-nav');
+    if (mainNav) mainNav.classList.remove('hidden');
+
     // Switch state to fully Interactive exploration
     state.phase = 5;
-    
+
     // Spawn secondary network pulse from Command Center
     ripples.push({
       x: nodes.command.x,
@@ -607,20 +628,20 @@ function drawGrid() {
   ctx.save();
   ctx.strokeStyle = 'rgba(59, 130, 246, 0.025)';
   ctx.lineWidth = 1;
-  
+
   const gridSize = 80;
-  
+
   // Apply camera translation/zoom factors
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
-  
+
   // Add subtle parallax offset based on cursor movement + autonomous drift
   const timeDriftX = (Date.now() * 0.005) % gridSize;
   const timeDriftY = (Date.now() * 0.005) % gridSize;
-  
+
   const pxOffsetX = state.cursor.x * 0.03 + timeDriftX;
   const pxOffsetY = state.cursor.y * 0.03 + timeDriftY;
-  
+
   // Horizontal grid lines
   for (let y = 0; y < height * 2; y += gridSize) {
     ctx.beginPath();
@@ -628,7 +649,7 @@ function drawGrid() {
     ctx.lineTo(width * 2, y + pxOffsetY - height * 0.5);
     ctx.stroke();
   }
-  
+
   // Vertical grid lines
   for (let x = 0; x < width * 2; x += gridSize) {
     ctx.beginPath();
@@ -636,7 +657,7 @@ function drawGrid() {
     ctx.lineTo(x + pxOffsetX - width * 0.5, height * 2);
     ctx.stroke();
   }
-  
+
   ctx.restore();
 }
 
@@ -644,22 +665,22 @@ function drawNetworkLines() {
   ctx.save();
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
-  
+
   // 1. Draw Ignition path (Phase 2)
   ignitionLines.forEach(line => {
     if (line.progress < 1) {
       line.progress += 0.045; // grows line faster (was 0.015)
-      
+
       const currentX = line.startX + (line.endX - line.startX) * line.progress;
       const currentY = line.startY + (line.endY - line.startY) * line.progress;
-      
+
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.35)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(line.startX, line.startY);
       ctx.lineTo(currentX, currentY);
       ctx.stroke();
-      
+
       // Node wakes up when line arrives
       if (line.progress >= 1) {
         line.progress = 1;
@@ -680,10 +701,10 @@ function drawNetworkLines() {
   activeConnections.forEach(conn => {
     const nodeFrom = nodes[conn.from];
     const nodeTo = nodes[conn.to];
-    
+
     const currX = nodeFrom.x + (nodeTo.x - nodeFrom.x) * conn.progress;
     const currY = nodeFrom.y + (nodeTo.y - nodeFrom.y) * conn.progress;
-    
+
     // Set drawing styles depending on phase status
     if (state.phase >= 5) {
       // fully static background connections
@@ -702,15 +723,15 @@ function drawNetworkLines() {
       ctx.stroke();
     }
   });
-  
+
   // 3. Draw active signals sliding on connections
   signalParticles.forEach(p => {
     const nodeFrom = nodes[p.from];
     const nodeTo = nodes[p.to];
-    
+
     const sx = nodeFrom.x + (nodeTo.x - nodeFrom.x) * p.progress;
     const sy = nodeFrom.y + (nodeTo.y - nodeFrom.y) * p.progress;
-    
+
     ctx.fillStyle = 'rgba(59, 130, 246, 0.65)';
     ctx.shadowColor = 'rgba(59, 130, 246, 0.8)';
     ctx.shadowBlur = 8;
@@ -719,40 +740,40 @@ function drawNetworkLines() {
     ctx.fill();
     ctx.shadowBlur = 0; // reset
   });
-  
+
   ctx.restore();
 }
 
 function drawNodes() {
   if (state.phase < 2) return; // invisible in dormant state
-  
+
   ctx.save();
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
-  
+
   for (const [key, node] of Object.entries(nodes)) {
     if (node.state === 'dormant') continue;
-    
+
     // Draw connections pulses on active nodes
     if (node.state === 'active') {
       node.glow += 0.012;
       const progress = node.glow % 1;
       const pulseSize = node.radius + progress * 15;
       const pulseAlpha = 0.22 * (1 - progress);
-      
+
       ctx.strokeStyle = `rgba(59, 130, 246, ${pulseAlpha})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(node.x, node.y, pulseSize, 0, Math.PI * 2);
       ctx.stroke();
     }
-    
+
     // Inner node body
     ctx.fillStyle = node.state === 'active' ? 'rgba(59, 130, 246, 0.7)' : 'rgba(100, 116, 139, 0.4)';
     ctx.beginPath();
     ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Reposition matching HTML absolute element overlay
     if (node.el) {
       // Target position under zoom & translation camera matrices
@@ -760,7 +781,7 @@ function drawNodes() {
       const targetScreenY = node.y * state.zoom.scale + state.zoom.y;
       node.el.style.left = `${targetScreenX}px`;
       node.el.style.top = `${targetScreenY}px`;
-      
+
       // Node visibility transition
       if (node.state === 'active' && state.phase >= 4) {
         node.el.style.opacity = 1;
@@ -771,7 +792,7 @@ function drawNodes() {
       }
     }
   }
-  
+
   ctx.restore();
 }
 
@@ -780,28 +801,28 @@ function drawParticles() {
   // Apply camera factors for parallax
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
-  
+
   particles.forEach(p => {
     // Parallax motion: shift positions based on cursor velocities
     const parallaxX = state.cursor.x * 0.05 * p.depth;
     const parallaxY = state.cursor.y * 0.05 * p.depth;
-    
+
     // Slow drift velocity updates
     p.x += p.vx;
     p.y += p.vy;
-    
+
     // Boundaries loop
     if (p.x < 0) p.x = width;
     if (p.x > width) p.x = 0;
     if (p.y < 0) p.y = height;
     if (p.y > height) p.y = 0;
-    
+
     ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
     ctx.beginPath();
     ctx.arc(p.x + parallaxX, p.y + parallaxY, p.size, 0, Math.PI * 2);
     ctx.fill();
   });
-  
+
   ctx.restore();
 }
 
@@ -809,24 +830,24 @@ function drawRipples() {
   ctx.save();
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
-  
+
   for (let i = ripples.length - 1; i >= 0; i--) {
     const r = ripples[i];
     r.radius += r.speed;
     r.alpha -= 0.01;
-    
+
     if (r.alpha <= 0) {
       ripples.splice(i, 1);
       continue;
     }
-    
+
     ctx.strokeStyle = `rgba(59, 130, 246, ${r.alpha})`;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
     ctx.stroke();
   }
-  
+
   ctx.restore();
 }
 
@@ -834,37 +855,37 @@ function drawDataStreams() {
   ctx.save();
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
-  
+
   for (let i = dataStreams.length - 1; i >= 0; i--) {
     const stream = dataStreams[i];
-    
+
     // Move stream
     stream.x += stream.vx;
     stream.y += stream.vy;
     stream.progress += stream.speed;
-    
+
     // Fade in and out based on progress
     let alpha = stream.alpha;
     if (stream.progress < 0.2) alpha = stream.alpha * (stream.progress / 0.2);
     if (stream.progress > 0.8) alpha = stream.alpha * ((1 - stream.progress) / 0.2);
-    
+
     // Draw stream streak
     const grad = ctx.createLinearGradient(stream.x, stream.y, stream.x - stream.vx * stream.length, stream.y - stream.vy * stream.length);
     grad.addColorStop(0, `rgba(59, 130, 246, ${alpha})`);
     grad.addColorStop(1, `rgba(59, 130, 246, 0)`);
-    
+
     ctx.strokeStyle = grad;
     ctx.lineWidth = stream.width;
     ctx.beginPath();
     ctx.moveTo(stream.x, stream.y);
     ctx.lineTo(stream.x - stream.vx * stream.length, stream.y - stream.vy * stream.length);
     ctx.stroke();
-    
+
     if (stream.progress >= 1) {
       dataStreams.splice(i, 1);
     }
   }
-  
+
   ctx.restore();
 }
 
@@ -874,11 +895,11 @@ function drawDataStreams() {
 window.addEventListener('mousemove', (e) => {
   state.cursor.targetX = e.clientX;
   state.cursor.targetY = e.clientY;
-  
+
   // Calculate relative delta for cursor movement state
   const d = Math.hypot(state.cursor.targetX - state.cursor.x, state.cursor.targetY - state.cursor.y);
   state.cursor.isMoving = d > 2;
-  
+
   if (state.phase >= 5 && state.cursor.isMoving && Math.random() < 0.06) {
     // Generate weak trail particles
     ripples.push({
@@ -903,10 +924,10 @@ setInterval(() => {
 // Occasional Data Streams / Shooting Stars
 setInterval(() => {
   if (state.phase < 4 || Math.random() > 0.4) return; // 40% chance every 3s
-  
+
   const isHorizontal = Math.random() > 0.5;
   const speed = Math.random() * 15 + 10;
-  
+
   dataStreams.push({
     x: isHorizontal ? (Math.random() > 0.5 ? 0 : width) : Math.random() * width,
     y: isHorizontal ? Math.random() * height : (Math.random() > 0.5 ? 0 : height),
@@ -924,17 +945,18 @@ setInterval(() => {
 // CORE GAMING / ANIMATION FRAME LOOP
 // -------------------------------------------------------------
 function tick() {
-  ctx.clearRect(0, 0, width, height); // Clear instead of fillRect to let CSS background show
-  
+  ctx.fillStyle = 'rgba(2, 3, 5, 0.96)';
+  ctx.fillRect(0, 0, width, height);
+
   // Interpolate camera matrices (Zoom & translation)
   state.zoom.scale += (state.zoom.targetScale - state.zoom.scale) * 0.06;
   state.zoom.x += (state.zoom.targetX - state.zoom.x) * 0.06;
   state.zoom.y += (state.zoom.targetY - state.zoom.y) * 0.06;
-  
+
   // Interpolate mouse coordinates (smooth lag damping)
   state.cursor.x += (state.cursor.targetX - state.cursor.x) * 0.08;
   state.cursor.y += (state.cursor.targetY - state.cursor.y) * 0.08;
-  
+
   // Draw base structures
   drawGrid();
   drawDataStreams();
@@ -942,11 +964,11 @@ function tick() {
   drawNetworkLines();
   drawRipples();
   drawNodes();
-  
+
   // Engine states
   updateNetworkBoot();
   updateSignalParticles();
-  
+
   requestAnimationFrame(tick);
 }
 
@@ -978,7 +1000,7 @@ const totalNavItems = navLinks.length;
 function handleSwipe() {
   const diffX = touchStartX - touchEndX;
   const diffY = touchStartY - touchEndY;
-  
+
   // Only trigger if horizontal swipe is larger than vertical swipe
   if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
     if (diffX > 0) {
@@ -997,7 +1019,7 @@ function handleSwipe() {
 
 function changeNavTab(newIndex) {
   currentNavIndex = newIndex;
-  
+
   // Update active state in UI
   navLinks.forEach((link, idx) => {
     if (idx === newIndex) {
@@ -1017,7 +1039,7 @@ function triggerMockTransition(tabName) {
   hudContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
   hudContainer.style.opacity = '0';
   hudContainer.style.transform = 'scale(1.05)';
-  
+
   setTimeout(() => {
     // Optionally update the central title to reflect the mock page
     const titleEl = document.querySelector('.main-title');
@@ -1028,7 +1050,7 @@ function triggerMockTransition(tabName) {
         titleEl.textContent = tabName;
       }
     }
-    
+
     // Fade back in
     hudContainer.style.opacity = '1';
     hudContainer.style.transform = 'scale(1)';
@@ -1059,8 +1081,10 @@ window.addEventListener('touchend', e => {
 // Zero external audio files needed, 100% web audio synthesis
 // -------------------------------------------------------------
 let archiveAudioCtx = null;
-let museumChordTimer = null;
-let isMuseumMusicPlaying = false;
+let epicMusicTimer = null;
+let musicStep = 0;
+let isMusicSequencerActive = false;
+let isTensionHover = false;
 
 function initArchiveAudio() {
   if (!archiveAudioCtx) {
@@ -1072,100 +1096,205 @@ function initArchiveAudio() {
   }
 }
 
-// Melodic Ambient Chimes Progression (A minor 9th, F maj 7th, C maj 9th, G sus4)
-const museumChords = [
-  [220.00, 261.63, 329.63, 392.00, 493.88], // Am9
-  [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj7
-  [130.81, 164.81, 196.00, 246.94, 293.66], // Cmaj9
-  [196.00, 246.94, 293.66, 349.23, 440.00]  // Gsus4
+// Epic dark chord progressions for House of the Dragon cello-style plucks
+const arpeggioProgression = [
+  // Am: A2, E3, A3, C4
+  [110.00, 164.81, 220.00, 261.63],
+  // F: F2, C3, F3, A3
+  [87.31, 130.81, 174.61, 220.00],
+  // Dm: D2, A2, D3, F3
+  [73.42, 110.00, 146.83, 174.61],
+  // Esus4 -> E: E2, B2, E3, G#3
+  [82.41, 123.47, 164.81, 207.65]
 ];
-let chordIndex = 0;
-let isTensionHover = false;
 
 function setTensionState(state) {
   isTensionHover = state;
 }
 
-function playMuseumChordSwell() {
-  if (!archiveAudioCtx || !isMuseumMusicPlaying) return;
+function playEpicSequencerStep() {
+  if (!archiveAudioCtx || !isMusicSequencerActive) return;
   try {
     const now = archiveAudioCtx.currentTime;
-    const mult = isTensionHover ? 1.5 : 1.0; // Pitch bend up during tension hover!
-    const notes = museumChords[chordIndex % museumChords.length];
-    chordIndex++;
-
-    notes.forEach((freq, idx) => {
-      const osc = archiveAudioCtx.createOscillator();
-      const gain = archiveAudioCtx.createGain();
-
-      osc.type = isTensionHover ? 'sawtooth' : (idx % 2 === 0 ? 'sine' : 'triangle');
-      osc.frequency.setValueAtTime(freq * mult, now + idx * 0.12);
-
-      gain.gain.setValueAtTime(0, now + idx * 0.12);
-      gain.gain.linearRampToValueAtTime(isTensionHover ? 0.03 : 0.015, now + idx * 0.12 + 0.8);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.12 + 3.5);
-
-      osc.connect(gain);
-      gain.connect(archiveAudioCtx.destination);
-
-      osc.start(now + idx * 0.12);
-      osc.stop(now + idx * 0.12 + 3.6);
-    });
+    
+    // 1. Driving Arpeggiated Plucks (sawtooth cellos)
+    const chordIndex = Math.floor(musicStep / 16) % arpeggioProgression.length;
+    const notes = arpeggioProgression[chordIndex];
+    const noteFreq = notes[musicStep % notes.length];
+    
+    const bassOsc = archiveAudioCtx.createOscillator();
+    const bassGain = archiveAudioCtx.createGain();
+    const bassFilter = archiveAudioCtx.createBiquadFilter();
+    
+    bassOsc.type = 'sawtooth';
+    bassOsc.frequency.setValueAtTime(noteFreq, now);
+    
+    // Lowpass filter opens up dramatically under hover tension!
+    bassFilter.type = 'lowpass';
+    bassFilter.frequency.setValueAtTime(isTensionHover ? 1100 : 500, now);
+    if (isTensionHover) {
+      bassFilter.Q.setValueAtTime(4, now);
+    }
+    
+    bassGain.gain.setValueAtTime(0, now);
+    bassGain.gain.linearRampToValueAtTime(isTensionHover ? 0.05 : 0.025, now + 0.02);
+    bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+    
+    bassOsc.connect(bassFilter);
+    bassFilter.connect(bassGain);
+    bassGain.connect(archiveAudioCtx.destination);
+    
+    bassOsc.start(now);
+    bassOsc.stop(now + 0.28);
+    
+    // 2. Cinematic Taiko Drum Beats (quarter notes)
+    if (musicStep % 2 === 0) {
+      const drumOsc = archiveAudioCtx.createOscillator();
+      const drumGain = archiveAudioCtx.createGain();
+      
+      drumOsc.type = 'sine';
+      drumOsc.frequency.setValueAtTime(130, now);
+      drumOsc.frequency.exponentialRampToValueAtTime(42, now + 0.12);
+      
+      drumGain.gain.setValueAtTime(isTensionHover ? 0.22 : 0.16, now);
+      drumGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+      
+      drumOsc.connect(drumGain);
+      drumGain.connect(archiveAudioCtx.destination);
+      
+      drumOsc.start(now);
+      drumOsc.stop(now + 0.6);
+    }
+    
+    // 3. Detuned Soaring Epic Chords (bar sweeps)
+    if (musicStep % 16 === 0) {
+      const chordNotes = arpeggioProgression[chordIndex];
+      chordNotes.forEach((freq, idx) => {
+        const strOsc1 = archiveAudioCtx.createOscillator();
+        const strOsc2 = archiveAudioCtx.createOscillator();
+        const strGain = archiveAudioCtx.createGain();
+        
+        strOsc1.type = 'triangle';
+        strOsc2.type = 'sawtooth';
+        
+        // detuned strings soaring in higher register
+        strOsc1.frequency.setValueAtTime(freq * 2 - 2, now);
+        strOsc2.frequency.setValueAtTime(freq * 2 + 2, now);
+        
+        strGain.gain.setValueAtTime(0, now);
+        strGain.gain.linearRampToValueAtTime(0.016, now + 1.2);
+        strGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.2);
+        
+        strOsc1.connect(strGain);
+        strOsc2.connect(strGain);
+        strGain.connect(archiveAudioCtx.destination);
+        
+        strOsc1.start(now);
+        strOsc2.start(now);
+        strOsc1.stop(now + 4.5);
+        strOsc2.stop(now + 4.5);
+      });
+    }
+    
+    musicStep++;
   } catch (e) {}
 }
 
 function startArchiveAmbientDrone() {
   initArchiveAudio();
   if (!archiveAudioCtx) return;
-  if (isMuseumMusicPlaying) return;
+  if (isMusicSequencerActive) return;
 
-  isMuseumMusicPlaying = true;
-  playMuseumChordSwell();
-  museumChordTimer = setInterval(() => {
-    if (isMuseumMusicPlaying) playMuseumChordSwell();
-  }, 4200);
+  isMusicSequencerActive = true;
+  musicStep = 0;
+  playEpicSequencerStep();
+  epicMusicTimer = setInterval(playEpicSequencerStep, 272); // 110 BPM 8th notes
 }
 
 function stopArchiveAmbientDrone() {
-  isMuseumMusicPlaying = false;
+  isMusicSequencerActive = false;
   isTensionHover = false;
-  if (museumChordTimer) {
-    clearInterval(museumChordTimer);
-    museumChordTimer = null;
+  if (epicMusicTimer) {
+    clearInterval(epicMusicTimer);
+    epicMusicTimer = null;
   }
 }
 
-// Explosive Dramatic Attack Takeover Sound FX
+// Emergency Buzzer Alarm & Glitch Riser Takeover Sound FX
 function playDramaticAttackTakeoverSound(type) {
   initArchiveAudio();
   if (!archiveAudioCtx) return;
   try {
     const now = archiveAudioCtx.currentTime;
-    
-    // Sub-bass Drop Osc
+
+    // 1. Deep Sub-bass Drop Visual Boom
     const subOsc = archiveAudioCtx.createOscillator();
     const subGain = archiveAudioCtx.createGain();
     subOsc.type = 'sine';
     subOsc.frequency.setValueAtTime(160, now);
-    subOsc.frequency.exponentialRampToValueAtTime(35, now + 0.6);
-    subGain.gain.setValueAtTime(0.12, now);
-    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    subOsc.frequency.exponentialRampToValueAtTime(32, now + 0.65);
+    subGain.gain.setValueAtTime(0.24, now);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
     subOsc.connect(subGain);
     subGain.connect(archiveAudioCtx.destination);
-    subOsc.start(now); subOsc.stop(now + 0.6);
+    subOsc.start(now); subOsc.stop(now + 0.75);
 
-    // High Cyber Glitch Riser Osc
+    // 2. High Frequency Cyber Riser
     const riseOsc = archiveAudioCtx.createOscillator();
     const riseGain = archiveAudioCtx.createGain();
-    riseOsc.type = type === 'stuxnet' || type === 'wannacry' ? 'sawtooth' : 'square';
-    riseOsc.frequency.setValueAtTime(200, now);
-    riseOsc.frequency.exponentialRampToValueAtTime(2400, now + 0.4);
-    riseGain.gain.setValueAtTime(0.05, now);
-    riseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    riseOsc.type = 'sawtooth';
+    riseOsc.frequency.setValueAtTime(180, now);
+    riseOsc.frequency.exponentialRampToValueAtTime(2600, now + 0.45);
+    riseGain.gain.setValueAtTime(0.06, now);
+    riseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
     riseOsc.connect(riseGain);
     riseGain.connect(archiveAudioCtx.destination);
-    riseOsc.start(now); riseOsc.stop(now + 0.45);
-  } catch (e) {}
+    riseOsc.start(now); riseOsc.stop(now + 0.5);
+
+    // 3. Cyber Alert Industrial Buzzer (FM Synthesis alert blasts)
+    const buzzOsc = archiveAudioCtx.createOscillator();
+    const buzzLfo = archiveAudioCtx.createOscillator();
+    const buzzLfoGain = archiveAudioCtx.createGain();
+    const buzzGain = archiveAudioCtx.createGain();
+    const buzzFilter = archiveAudioCtx.createBiquadFilter();
+
+    buzzOsc.type = 'sawtooth';
+    buzzOsc.frequency.setValueAtTime(115, now);
+
+    buzzLfo.type = 'square';
+    buzzLfo.frequency.setValueAtTime(15, now); // 15Hz tremolo buzzer modulation
+
+    buzzLfoGain.gain.setValueAtTime(120, now);
+
+    buzzFilter.type = 'bandpass';
+    buzzFilter.frequency.setValueAtTime(880, now);
+    buzzFilter.Q.setValueAtTime(4.5, now);
+
+    buzzGain.gain.setValueAtTime(0, now);
+    // Three rapid alert buzzer sweeps
+    buzzGain.gain.linearRampToValueAtTime(0.09, now + 0.05);
+    buzzGain.gain.setValueAtTime(0.09, now + 0.35);
+    buzzGain.gain.linearRampToValueAtTime(0, now + 0.4);
+    
+    buzzGain.gain.linearRampToValueAtTime(0.09, now + 0.5);
+    buzzGain.gain.setValueAtTime(0.09, now + 0.8);
+    buzzGain.gain.linearRampToValueAtTime(0, now + 0.85);
+
+    buzzGain.gain.linearRampToValueAtTime(0.09, now + 0.95);
+    buzzGain.gain.setValueAtTime(0.09, now + 1.35);
+    buzzGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
+
+    buzzLfo.connect(buzzLfoGain);
+    buzzLfoGain.connect(buzzOsc.frequency);
+    buzzOsc.connect(buzzFilter);
+    buzzFilter.connect(buzzGain);
+    buzzGain.connect(archiveAudioCtx.destination);
+
+    buzzOsc.start(now);
+    buzzLfo.start(now);
+    buzzOsc.stop(now + 1.65);
+    buzzLfo.stop(now + 1.65);
+  } catch (e) { }
 }
 
 // Unique Sound FX for each Exhibit Micro-Interaction
@@ -1234,7 +1363,7 @@ function playExhibitSound(type) {
       osc.connect(gain);
       osc.start(now); osc.stop(now + 0.3);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 // -------------------------------------------------------------
@@ -1242,6 +1371,9 @@ function playExhibitSound(type) {
 // -------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  // Navbar remains securely pinned at top without translating off-screen
+  const mainNavEl = document.getElementById('main-nav');
 
   const hallway = document.getElementById('archive-hallway');
   const yearBadge = document.getElementById('archive-year-badge');
@@ -1303,6 +1435,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const triggerInfection = () => {
           document.body.className = document.body.className.replace(/\binfect-\S+/g, '').trim();
           document.body.classList.add(`infect-${exhibitType}`);
+          document.body.classList.remove('cursor-tension');
+          document.body.classList.add('cursor-freakout');
           playDramaticAttackTakeoverSound(exhibitType);
           startExhibitEffect(exhibitType);
         };
@@ -1310,12 +1444,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const clearInfection = () => {
           if (hoverTimer) clearTimeout(hoverTimer);
           setTensionState(false);
+          document.body.classList.remove('cursor-tension', 'cursor-freakout');
           document.body.className = document.body.className.replace(/\binfect-\S+/g, '').trim();
           stopExhibitEffect();
         };
 
         visualArea.addEventListener('mouseenter', () => {
           setTensionState(true);
+          document.body.classList.add('cursor-tension');
           playExhibitSound(exhibitType);
           hoverTimer = setTimeout(triggerInfection, 700);
         });
@@ -1340,6 +1476,7 @@ document.addEventListener('DOMContentLoaded', () => {
             effectMouseY = e.touches[0].clientY;
           }
           setTensionState(true);
+          document.body.classList.add('cursor-tension');
           playExhibitSound(exhibitType);
           hoverTimer = setTimeout(triggerInfection, 500);
         }, { passive: true });
@@ -1628,6 +1765,89 @@ function renderEffectLoop() {
 
   effectAnimFrame = requestAnimationFrame(renderEffectLoop);
 }
+
+// -------------------------------------------------------------
+// TACTICAL CYBER CUSTOM CURSOR ENGINE
+// -------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const cursorDot = document.getElementById('cyber-cursor-dot');
+  const cursorRing = document.getElementById('cyber-cursor-ring');
+  if (!cursorDot || !cursorRing) return;
+
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+  let hideTimeout;
+
+  // Track mouse coordinates
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    // Show cursor on movement
+    cursorDot.style.opacity = '1';
+    cursorRing.style.opacity = '1';
+
+    // Immediate update for precision dot
+    cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+
+    // Clear auto-hide timeout
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+      cursorDot.style.opacity = '0';
+      cursorRing.style.opacity = '0';
+    }, 3000);
+  });
+
+  // Smooth lerp update for tracking reticle ring
+  function updateRingPosition() {
+    ringX += (mouseX - ringX) * 0.15;
+    ringY += (mouseY - ringY) * 0.15;
+
+    cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+    requestAnimationFrame(updateRingPosition);
+  }
+  updateRingPosition();
+
+  // Track active click state
+  window.addEventListener('mousedown', () => {
+    document.body.classList.add('cursor-active');
+  });
+
+  window.addEventListener('mouseup', () => {
+    document.body.classList.remove('cursor-active');
+  });
+
+  // Track hover status on interactive elements
+  function addHoverListeners() {
+    const interactiveSelectors = 'a, button, input, select, textarea, label, [role="button"], .nav-node, .spatial-exhibit, .nav-pill-btn';
+    document.querySelectorAll(interactiveSelectors).forEach(el => {
+      if (el.dataset.hasCursorListeners) return;
+      el.dataset.hasCursorListeners = 'true';
+
+      el.addEventListener('mouseenter', () => {
+        document.body.classList.add('cursor-hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        document.body.classList.remove('cursor-hover');
+      });
+    });
+  }
+
+  // Dynamic initialization for static + async loaded elements
+  addHoverListeners();
+  
+  // Re-observe periodically or on DOM changes
+  const observer = new MutationObserver(() => {
+    addHoverListeners();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // Hide cursor when leaving viewport
+  document.addEventListener('mouseleave', () => {
+    cursorDot.style.opacity = '0';
+    cursorRing.style.opacity = '0';
+  });
+});
 
 
 

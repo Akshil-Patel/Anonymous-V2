@@ -42,7 +42,201 @@ body {
   font-family: var(--font-ui);
 }
 
-body::before {
+/* -------------------------------------------------------------
+   TACTICAL CYBER CUSTOM CURSOR SYSTEM
+   ------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+.cursor-element {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0;
+  transition: opacity 0.25s ease, width 0.25s ease, height 0.25s ease, margin 0.25s ease;
+  will-change: transform;
+}
+
+#cyber-cursor-dot {
+  width: 0;
+  height: 0;
+}
+
+.dot-visual {
+  width: 5px;
+  height: 9px;
+  margin-top: -4.5px;
+  margin-left: -2.5px;
+  border-radius: 1px;
+  background: #60a5fa;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.8);
+  transition: opacity 0.25s ease, background-color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+#cyber-cursor-ring {
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
+  background: transparent;
+  transition: opacity 0.25s ease, width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), margin 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reticle-brackets-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Custom Corner Target Reticles */
+.reticle-bracket {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid rgba(96, 165, 250, 0.7);
+  transition: border-color 0.3s ease, border-width 0.3s ease, width 0.3s ease, height 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reticle-bracket.tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.reticle-bracket.tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.reticle-bracket.bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.reticle-bracket.br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+/* Hovering over interactive elements */
+body.cursor-hover #cyber-cursor-ring {
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
+}
+
+body.cursor-hover .reticle-brackets-container {
+  transform: rotate(90deg); /* Corner rotation on hover */
+}
+
+body.cursor-hover .reticle-bracket {
+  border-color: #3b82f6;
+  border-width: 1.5px;
+}
+
+body.cursor-hover .dot-visual {
+  transform: scale(1.4);
+  background: #ffffff;
+  box-shadow: 0 0 10px #ffffff;
+}
+
+/* Click Active State */
+body.cursor-active .reticle-brackets-container {
+  transform: scale(0.8) rotate(45deg);
+}
+
+body.cursor-active .dot-visual {
+  transform: scale(0.6);
+  background: #3b82f6;
+}
+
+/* Glitch Shake & Colors for Custom Cursor Freakout */
+@keyframes cursor-glitch-shake {
+  0% { transform: scale(1) translate(0, 0); }
+  20% { transform: scale(1.1) translate(-2px, 1.5px); }
+  40% { transform: scale(0.95) translate(1.5px, -2px); }
+  60% { transform: scale(1.15) translate(1px, -1px); }
+  80% { transform: scale(1.05) translate(-1.5px, 1px); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+@keyframes cursor-freakout-rotate {
+  0% { transform: rotate(0deg); opacity: 1; }
+  15% { transform: rotate(90deg); opacity: 0.5; }
+  30% { transform: rotate(180deg); opacity: 1; }
+  45% { transform: rotate(45deg); opacity: 0.3; }
+  60% { transform: rotate(270deg); opacity: 0.9; }
+  75% { transform: rotate(135deg); opacity: 0.4; }
+  90% { transform: rotate(315deg); opacity: 1; }
+  100% { transform: rotate(360deg); opacity: 0.7; }
+}
+
+@keyframes dot-freakout-flicker {
+  0% { background: #ef4444; box-shadow: 0 0 12px #ef4444; transform: scale(1.3); }
+  20% { background: #ffffff; box-shadow: 0 0 8px #ffffff; transform: scale(0.9); }
+  40% { background: #00ff66; box-shadow: 0 0 14px #00ff66; transform: scale(1.5); }
+  60% { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; transform: scale(1.1); }
+  80% { background: #ef4444; box-shadow: 0 0 15px #ef4444; transform: scale(1.4); }
+  100% { background: #ffffff; box-shadow: 0 0 10px #ffffff; transform: scale(1.2); }
+}
+
+@keyframes cursor-spin-tension {
+  0% { transform: rotate(0deg) scale(0.85); }
+  100% { transform: rotate(360deg) scale(0.85); }
+}
+
+@keyframes cursor-bracket-pulse {
+  0% { border-color: rgba(239, 68, 68, 0.75); }
+  50% { border-color: rgba(245, 158, 11, 0.95); }
+  100% { border-color: rgba(239, 68, 68, 0.75); }
+}
+
+/* Tension Build-up State */
+body.cursor-tension #cyber-cursor-ring {
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  margin-left: -14px;
+}
+
+body.cursor-tension .reticle-brackets-container {
+  animation: cursor-spin-tension 0.5s linear infinite;
+}
+
+body.cursor-tension .reticle-bracket {
+  border-color: #ef4444;
+  animation: cursor-bracket-pulse 0.25s ease infinite;
+}
+
+body.cursor-tension .dot-visual {
+  background: #ef4444;
+  box-shadow: 0 0 12px #ef4444;
+  animation: cursor-glitch-shake 0.3s infinite;
+}
+
+/* Attack Takeover Freakout State (Compact, High-contrast Glitch & Clamp Lock) */
+body.cursor-freakout #cyber-cursor-ring {
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  margin-left: -18px;
+}
+
+body.cursor-freakout .reticle-brackets-container {
+  animation: cursor-freakout-rotate 0.25s steps(4) infinite; /* Fast matrix-style discrete rotation jumps! */
+}
+
+body.cursor-freakout .reticle-bracket {
+  border-color: #f43f5e;
+  border-width: 2px;
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 10px #f43f5e;
+}
+
+/* Clamps inward to frame target tightly instead of expanding wildly */
+body.cursor-freakout .reticle-bracket.tl { transform: translate(2px, 2px); }
+body.cursor-freakout .reticle-bracket.tr { transform: translate(-2px, 2px); }
+body.cursor-freakout .reticle-bracket.bl { transform: translate(2px, -2px); }
+body.cursor-freakout .reticle-bracket.br { transform: translate(-2px, -2px); }
+
+body.cursor-freakout .dot-visual {
+  animation: dot-freakout-flicker 0.15s infinite; /* Rapid color swap & scaling flicker */
+} body::before {
   content: "";
   position: absolute;
   top: 0;
@@ -483,7 +677,7 @@ body::before {
   font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 2px;
-  color: #e2e8f0;
+  color: #b1cadb;
   /* Soft contrast white-silver */
   transition: color 0.4s, letter-spacing 0.4s;
   background: rgba(5, 5, 7, 0.85);
@@ -658,118 +852,173 @@ body::before {
    FLOATING NAV BAR & AUDIO
    ------------------------------------------------------------- */
 #main-nav {
-  transition: opacity 1.5s ease;
-  z-index: 50;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 1000;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-#main-nav.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.glass-nav {
-  position: absolute;
-  top: 0.75rem;
-  /* Moved closer to the top edge to increase spacing below it */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 900px;
-  /* Matches max-width of title container */
+/* -------------------------------------------------------------
+   CYBER REFERENCE NAVBAR (Full-width Edge-to-Edge Header + Dotted Border)
+   ------------------------------------------------------------- */
+.tiger-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.7rem 1.8rem;
-  background: rgba(10, 10, 12, 0.28);
-  /* More translucent background */
-  backdrop-filter: saturate(180%) blur(45px);
-  /* Increased blur depth */
-  -webkit-backdrop-filter: saturate(180%) blur(45px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 17px;
-  /* Less rounded out, sharp clean Apple design */
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.08),
-    0 8px 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  padding: 0.65rem 2.8rem;
+  min-height: 60px;
+  box-sizing: border-box;
+  background: rgba(4, 5, 8, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1.5px dotted rgba(59, 130, 246, 0.35);
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.nav-left {
+.tiger-nav.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+
+/* Nav Pill Clusters (Equal 1fr sides for perfect symmetry) */
+.nav-pill-cluster {
+  flex: 1 1 0%;
   display: flex;
   align-items: center;
   gap: 12px;
-  cursor: pointer;
 }
 
-.nav-logo {
-  height: 22px;
+.nav-pill-cluster--left {
+  justify-content: flex-start;
+}
+
+.nav-pill-cluster--right {
+  justify-content: flex-end;
+}
+
+/* Center Brand Emblem — Dead Centered in 3-Column Layout */
+.nav-center-brand {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-center-brand:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* Pill Button Base Styling — Highly Readable & Spacious */
+.nav-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.48rem 1.15rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s ease;
+}
+
+.nav-pill-btn:hover .pill-dot,
+.nav-pill-btn.active .pill-dot {
+  background: #3b82f6;
+}
+
+.nav-pill-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.nav-pill-btn.active {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #ffffff;
+}
+
+/* Join US & Audio Toggle Pill Variants */
+.nav-pill-btn--join {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.nav-pill-btn--join:hover {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.7);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-pill-btn--action {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+/* Center Brand Emblem — Dead Centered Horizontally, Clean Logo (No Circle, No Glow) */
+.nav-center-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-center-brand:hover {
+  opacity: 0.95;
+  transform: translateX(-50%) translateY(-1px);
+}
+
+.nav-logo-clean {
+  height: 26px;
   width: auto;
   object-fit: contain;
-  opacity: 0.8;
+  opacity: 0.95;
   transition: opacity 0.3s ease;
 }
 
-.nav-left:hover .nav-logo {
-  opacity: 1;
-}
-
-.nav-brand {
+.brand-title-text {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 3px;
-  color: var(--text-secondary);
-  font-weight: 500;
+  font-size: 0.88rem;
+  letter-spacing: 4px;
+  color: #f8fafc;
+  font-weight: 700;
   transition: color 0.3s ease;
-}
-
-.nav-left:hover .nav-brand {
-  color: var(--text-primary);
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  /* slightly smaller gap to account for dividers */
-}
-
-.nav-divider {
-  width: 1px;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.nav-link {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 2px;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all 0.4s ease;
-  padding: 4px 0;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.nav-icon {
-  display: none;
-  /* Hidden on desktop */
-  opacity: 0.6;
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.nav-link:hover .nav-icon,
-.nav-link.active .nav-icon {
-  opacity: 1;
-  transform: translateY(-2px);
-  color: var(--accent-color);
-}
-
-.nav-link:hover .nav-text,
-.nav-link.active .nav-text {
-  color: var(--text-primary);
 }
 
 #audio-toggle {
@@ -1549,8 +1798,7 @@ body::before {
   opacity: 0.45;
   transform: translateY(30px) scale(0.97);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.65) 0%, rgba(5, 5, 8, 0) 75%);
+    background: radial-gradient(ellipse at center, rgba(4, 6, 12, 0.92) 0%, rgba(0, 0, 0, 0.4) 75%);
   padding: 2.5rem 2rem;
   border-radius: 12px;
 }

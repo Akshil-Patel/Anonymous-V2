@@ -15,63 +15,52 @@
 </head>
 
 <body>
-  <!-- Floating Glass Navbar -->
-  <header id="main-nav" class="glass-nav hidden">
-    <div class="nav-left">
-      <img src="logo.png" alt="Anonymous Logo" class="nav-logo">
-      <span class="nav-brand">ANONYMOUS</span>
+  <!-- Tactical Cyber Custom Cursor -->
+  <div id="cyber-cursor-dot" class="cursor-element">
+    <div class="dot-visual"></div>
+  </div>
+  <div id="cyber-cursor-ring" class="cursor-element">
+    <div class="reticle-brackets-container">
+      <div class="reticle-bracket tl"></div>
+      <div class="reticle-bracket tr"></div>
+      <div class="reticle-bracket bl"></div>
+      <div class="reticle-bracket br"></div>
     </div>
-    <div class="nav-right">
-      <a href="#home" class="nav-link active" data-nav-index="0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        <span class="nav-text">HOME</span>
-      </a>
-      <span class="nav-divider"></span>
-      <a href="#about" class="nav-link" data-nav-index="1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M12 16v-4"></path>
-          <path d="M12 8h.01"></path>
-        </svg>
-        <span class="nav-text">ABOUT</span>
-      </a>
-      <span class="nav-divider"></span>
-      <a href="#events" class="nav-link" data-nav-index="2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-          <line x1="16" x2="16" y1="2" y2="6"></line>
-          <line x1="8" x2="8" y1="2" y2="6"></line>
-          <line x1="3" x2="21" y1="10" y2="10"></line>
-        </svg>
-        <span class="nav-text">EVENTS</span>
-      </a>
-      <span class="nav-divider"></span>
-      <a href="#join" class="nav-link" data-nav-index="3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <line x1="19" x2="19" y1="8" y2="14"></line>
-          <line x1="22" x2="16" y1="11" y2="11"></line>
-        </svg>
-        <span class="nav-text">JOIN US</span>
-      </a>
-      <span class="nav-divider"></span>
+  </div>
 
-      <!-- Ambient Audio Controls -->
-      <button id="audio-toggle" class="nav-audio-toggle" aria-label="Toggle audio">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
+  <!-- Full-width Edge-to-Edge Navbar with Reference Layout & Dotted Border -->
+  <header id="main-nav" class="tiger-nav hidden">
+
+    <!-- Left Navigation Pill Cluster (AGENTS, EVENTS, ABOUT) -->
+    <div class="nav-pill-cluster nav-pill-cluster--left">
+      <a href="agents.html" class="nav-pill-btn" data-nav-index="0">
+        <span class="pill-dot"></span>
+        <span class="pill-text">AGENTS</span>
+      </a>
+      <a href="#events" class="nav-pill-btn" data-nav-index="1">
+        <span class="pill-dot"></span>
+        <span class="pill-text">EVENTS</span>
+      </a>
+      <a href="#about" class="nav-pill-btn" data-nav-index="2">
+        <span class="pill-dot"></span>
+        <span class="pill-text">ABOUT</span>
+      </a>
+    </div>
+
+    <!-- Center Brand Emblem / Clean Logo (No Circle, No Glow) -->
+    <div class="nav-center-brand">
+      <img src="logo.png" alt="ANONYMOUS Logo" class="nav-logo-clean">
+      <span class="brand-title-text">ANONYMOUS</span>
+    </div>
+
+    <!-- Right Action Pill Cluster (JOIN US & SOUND BAR) -->
+    <div class="nav-pill-cluster nav-pill-cluster--right">
+      <a href="#join" class="nav-pill-btn nav-pill-btn--join">
+        <span class="pill-dot"></span>
+        <span class="pill-text">JOIN US</span>
+      </a>
+
+      <button id="audio-toggle" class="nav-pill-btn nav-pill-btn--action" aria-label="Toggle audio">
         <span class="audio-wave">
           <span class="bar"></span>
           <span class="bar"></span>
@@ -108,7 +97,7 @@
 
     <!-- Interactive Rooms / Network Navigation Nodes -->
     <nav id="network-navigation">
-      <a href="command.html" class="nav-node" data-room="command" id="node-command" style="top: 22%; left: 45%;">
+      <a href="command.html" class="nav-node" data-room="command" id="node-command" style="top: 24%; left: 50%;">
         <div class="node-ring"></div>
         <span class="node-label">COMMAND CENTER</span>
         <div class="node-card">
@@ -118,7 +107,7 @@
       </a>
 
       <a href="operations.html" class="nav-node" data-room="operations" id="node-operations"
-        style="top: 34%; left: 20%;">
+        style="top: 34%; left: 15%;">
         <div class="node-ring"></div>
         <span class="node-label">OPERATIONS</span>
         <div class="node-card">
@@ -128,7 +117,7 @@
       </a>
 
       <a href="intelligence.html" class="nav-node" data-room="intelligence" id="node-intelligence"
-        style="top: 26%; left: 75%;">
+        style="top: 34%; left: 85%;">
         <div class="node-ring"></div>
         <span class="node-label">INTELLIGENCE</span>
         <div class="node-card">
@@ -137,7 +126,7 @@
         </div>
       </a>
 
-      <a href="agents.html" class="nav-node" data-room="agents" id="node-agents" style="top: 74%; left: 16%;">
+      <a href="agents.html" class="nav-node" data-room="agents" id="node-agents" style="top: 76%; left: 12%;">
         <div class="node-ring"></div>
         <span class="node-label">AGENTS</span>
         <div class="node-card">
@@ -146,7 +135,7 @@
         </div>
       </a>
 
-      <a href="cyber-lab.html" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 76%; left: 38%;">
+      <a href="cyber-lab.html" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 84%; left: 32%;">
         <div class="node-ring"></div>
         <span class="node-label">CYBER LAB</span>
         <div class="node-card">
@@ -155,7 +144,7 @@
         </div>
       </a>
 
-      <a href="forensics.html" class="nav-node" data-room="forensics" id="node-forensics" style="top: 72%; left: 62%;">
+      <a href="forensics.html" class="nav-node" data-room="forensics" id="node-forensics" style="top: 84%; left: 68%;">
         <div class="node-ring"></div>
         <span class="node-label">FORENSICS</span>
         <div class="node-card">
@@ -164,7 +153,7 @@
         </div>
       </a>
 
-      <a href="vault.html" class="nav-node" data-room="vault" id="node-vault" style="top: 78%; left: 84%;">
+      <a href="vault.html" class="nav-node" data-room="vault" id="node-vault" style="top: 76%; left: 88%;">
         <div class="node-ring"></div>
         <span class="node-label">VAULT</span>
         <div class="node-card">
@@ -196,7 +185,7 @@
 
     <!-- Minimal Editorial Section Header -->
     <div class="archive-header">
-      <span class="archive-tag">HALLWAY 04 // LANDMARK ATTACK ARTIFACTS</span>
+      <!-- <span class="archive-tag">HALLWAY 04 // LANDMARK ATTACK ARTIFACTS</span> -->
       <h2 class="archive-title">THE ARCHIVE</h2>
       <p class="archive-subtitle">Historical breakthroughs that defined modern cybersecurity.</p>
     </div>

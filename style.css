@@ -322,85 +322,137 @@ body.cursor-freakout .dot-visual {
 }
 
 /* -------------------------------------------------------------
-   MINIMAL QUANTUM ORBIT LOADER
+   PREMIUM QUANTUM ORBIT LOADER
    ------------------------------------------------------------- */
 .quantum-loader {
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: 240px;
+  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
-.quantum-logo {
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 25px rgba(59, 130, 246, 0.45));
-  z-index: 2;
-  animation: quantum-logo-pop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+/* Three concentric orbital rings */
+.q-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid transparent;
 }
 
-.quantum-orbit {
+.q-ring-1 {
+  width: 240px;
+  height: 240px;
+  border-color: rgba(59, 130, 246, 0.15);
+  border-top-color: #3b82f6;
+  animation: q-spin 3.2s linear infinite;
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.2) inset;
+}
+
+.q-ring-2 {
+  width: 185px;
+  height: 185px;
+  border-color: rgba(96, 165, 250, 0.1);
+  border-bottom-color: #60a5fa;
+  animation: q-spin 2.1s linear infinite reverse;
+}
+
+.q-ring-3 {
+  width: 135px;
+  height: 135px;
+  border-color: rgba(147, 197, 253, 0.08);
+  border-right-color: rgba(147, 197, 253, 0.6);
+  animation: q-spin 1.6s linear infinite;
+}
+
+/* Satellite dots orbiting on the rings */
+.q-dot {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   border-radius: 50%;
   pointer-events: none;
 }
 
-.orbit-1 {
-  border: 1px solid rgba(59, 130, 246, 0.12);
-  animation: spin-clockwise 2.8s linear infinite;
+.q-dot-1 {
+  width: 7px;
+  height: 7px;
+  background: #60a5fa;
+  box-shadow: 0 0 12px #3b82f6, 0 0 24px rgba(59, 130, 246, 0.5);
+  animation: orbit-dot-1 3.2s linear infinite;
 }
 
-.orbit-2 {
-  width: 82%;
-  height: 82%;
-  top: 9%;
-  left: 9%;
-  border: 1px dashed rgba(59, 130, 246, 0.18);
-  animation: spin-counter-clockwise 2.0s linear infinite;
+.q-dot-2 {
+  width: 5px;
+  height: 5px;
+  background: #93c5fd;
+  box-shadow: 0 0 8px #60a5fa, 0 0 16px rgba(96, 165, 250, 0.4);
+  animation: orbit-dot-2 2.1s linear infinite reverse;
 }
 
-.orbit-node {
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #60a5fa;
-  box-shadow: 0 0 10px #3b82f6, 0 0 20px #60a5fa;
+.q-dot-3 {
+  width: 4px;
+  height: 4px;
+  background: #bfdbfe;
+  box-shadow: 0 0 6px #93c5fd;
+  animation: orbit-dot-3 1.6s linear infinite;
 }
 
-.orbit-2 .orbit-node {
-  top: auto;
-  bottom: -4px;
-  width: 6px;
-  height: 6px;
-  background-color: #38bdf8;
-  box-shadow: 0 0 8px #0284c7, 0 0 16px #38bdf8;
+.quantum-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  z-index: 5;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
+  animation: quantum-logo-pop 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: opacity 0.3s ease;
 }
 
-@keyframes spin-clockwise {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Orbital dot keyframes — each traces its ring radius */
+@keyframes orbit-dot-1 {
+  0%   { transform: translate(0px, -120px); }
+  25%  { transform: translate(120px, 0px);  }
+  50%  { transform: translate(0px, 120px);  }
+  75%  { transform: translate(-120px, 0px); }
+  100% { transform: translate(0px, -120px); }
 }
 
-@keyframes spin-counter-clockwise {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
+@keyframes orbit-dot-2 {
+  0%   { transform: translate(92.5px, 0px);   }
+  25%  { transform: translate(0px, 92.5px);   }
+  50%  { transform: translate(-92.5px, 0px);  }
+  75%  { transform: translate(0px, -92.5px);  }
+  100% { transform: translate(92.5px, 0px);   }
+}
+
+@keyframes orbit-dot-3 {
+  0%   { transform: translate(0px, 67.5px);  }
+  25%  { transform: translate(-67.5px, 0px); }
+  50%  { transform: translate(0px, -67.5px); }
+  75%  { transform: translate(67.5px, 0px);  }
+  100% { transform: translate(0px, 67.5px);  }
+}
+
+@keyframes q-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 @keyframes quantum-logo-pop {
-  0% { opacity: 0; transform: scale(0.9); }
+  0%   { opacity: 0; transform: scale(0.8); }
+  60%  { opacity: 1; transform: scale(1.05); }
   100% { opacity: 1; transform: scale(1); }
+}
+
+/* -------------------------------------------
+   LOGO FLIP TRANSITION (flies to navbar)
+   ------------------------------------------- */
+.flying-logo {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10000;
+  object-fit: contain;
+  opacity: 0;
+  will-change: transform, opacity, width, height;
 }
 
 /* -------------------------------------------------------------

@@ -78,18 +78,21 @@
   <!-- Volumetric Lighting Fog Overlay -->
   <div id="volumetric-fog"></div>
 
-  <!-- Phase 1: Dormant State Screen (Minimal Quantum Orbit Loader) -->
+  <!-- Phase 1: Dormant State Screen (Premium Quantum Orbit Loader) -->
   <div id="dormant-screen" class="active">
     <div class="quantum-loader">
-      <div class="quantum-orbit orbit-1">
-        <div class="orbit-node"></div>
-      </div>
-      <div class="quantum-orbit orbit-2">
-        <div class="orbit-node"></div>
-      </div>
-      <img src="logo.png" alt="Anonymous Logo" class="quantum-logo">
+      <div class="q-ring q-ring-1"></div>
+      <div class="q-ring q-ring-2"></div>
+      <div class="q-ring q-ring-3"></div>
+      <div class="q-dot q-dot-1"></div>
+      <div class="q-dot q-dot-2"></div>
+      <div class="q-dot q-dot-3"></div>
+      <img src="logo.png" alt="Anonymous Logo" class="quantum-logo" id="quantum-logo">
     </div>
   </div>
+
+  <!-- Detached flying logo for FLIP animation (lives outside dormant screen) -->
+  <img src="logo.png" alt="" class="flying-logo" id="flying-logo" aria-hidden="true">
 
   <!-- Main HUD Layer (Revealed during Phase 4) -->
   <main id="hud-container">

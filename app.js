@@ -405,49 +405,90 @@ function startHackerBootSequence(clickX, clickY) {
   if (bootTimer) clearTimeout(bootTimer);
 
   state.phase = 2;
-  
-  // Try initializing audio (browser might block initially, handled by interaction listeners below)
-  initAudio();
 
-  // Trigger system sound if audio context is active
+  // Try initializing audio
+  initAudio();
   playClickSound(200, 0.2, 0.2);
   playSweepSound();
 
-  // Add a ripple at click/center coordinate
+  // Add a ripple at center
   ripples.push({
-    x: clickX,
-    y: clickY,
+    x: clickX, y: clickY,
     radius: 0,
     maxRadius: Math.max(width, height) * 0.9,
     speed: 6.5,
     alpha: 0.8,
   });
 
-  // Identify the entry node (closest node to center/click)
+  // Identify closest node
   let closestNodeKey = 'command';
   let minDist = Infinity;
   for (const [key, node] of Object.entries(nodes)) {
     const d = Math.hypot(node.x - clickX, node.y - clickY);
-    if (d < minDist) {
-      minDist = d;
-      closestNodeKey = key;
-    }
+    if (d < minDist) { minDist = d; closestNodeKey = key; }
   }
 
-  // Start line trace towards entry node
   ignitionLines.push({
-    startX: clickX,
-    startY: clickY,
+    startX: clickX, startY: clickY,
     endX: nodes[closestNodeKey].x,
     endY: nodes[closestNodeKey].y,
-    progress: 0,
-    targetNode: closestNodeKey,
+    progress: 0, targetNode: closestNodeKey,
   });
 
-  // Fade out loader UI
+  // ── FLIP: Logo flies from center loader to navbar ──
+  const srcLogo  = document.getElementById('quantum-logo');
+  const flyLogo  = document.getElementById('flying-logo');
+  const navLogo  = document.querySelector('.nav-logo-clean');
   const dormantScreen = document.getElementById('dormant-screen');
-  if (dormantScreen) {
-    dormantScreen.classList.add('fade-out');
+
+  if (srcLogo && flyLogo && navLogo) {
+    const srcRect = srcLogo.getBoundingClientRect();
+    const dstRect = navLogo.getBoundingClientRect();
+
+    // Start: same position/size as the loader logo
+    flyLogo.style.width   = srcRect.width  + 'px';
+    flyLogo.style.height  = srcRect.height + 'px';
+    flyLogo.style.top     = srcRect.top    + 'px';
+    flyLogo.style.left    = srcRect.left   + 'px';
+    flyLogo.style.opacity = '1';
+    flyLogo.style.transition = 'none';
+    flyLogo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(59,130,246,0.5))';
+
+    // Hide the original logo inside loader immediately
+    srcLogo.style.opacity = '0';
+
+    // Calculate delta to nav logo (using transform for GPU acceleration)
+    const dx = dstRect.left - srcRect.left + (dstRect.width  - srcRect.width)  / 2;
+    const dy = dstRect.top  - srcRect.top  + (dstRect.height - srcRect.height) / 2;
+    const scaleX = dstRect.width  / srcRect.width;
+    const scaleY = dstRect.height / srcRect.height;
+
+    // Force paint, then animate
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        flyLogo.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease 0.4s, filter 0.6s ease';
+        flyLogo.style.transform  = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+        flyLogo.style.opacity    = '0';
+        flyLogo.style.filter     = 'none';
+
+        // Fade out dormant screen while logo is in flight
+        if (dormantScreen) {
+          dormantScreen.style.transition = 'opacity 0.5s ease 0.3s';
+          dormantScreen.style.opacity = '0';
+          setTimeout(() => {
+            dormantScreen.classList.remove('active');
+            dormantScreen.classList.add('fade-out');
+            flyLogo.style.opacity = '0';
+          }, 900);
+        }
+      });
+    });
+
+  } else {
+    // Fallback: plain fade out
+    if (dormantScreen) {
+      dormantScreen.classList.add('fade-out');
+    }
   }
 }
 

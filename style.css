@@ -350,37 +350,28 @@ body.cursor-freakout .dot-visual {
 
 .tracer-container {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  -webkit-mask-image: url('logo.png');
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-image: url('logo.png');
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
+  top: -15px; left: -15px;
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
   z-index: 2;
-  /* Removed buggy opacity/animation from container. Tracers handle their own visibility. */
+  pointer-events: none;
 }
 
 .glow-logo-tracer {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   border-radius: 50%;
-  /* Pure blue/cyan glowing aura without white inner strips */
-  filter: drop-shadow(0 0 8px #0066ff) drop-shadow(0 0 20px #00f0ff) drop-shadow(0 0 35px #0066ff);
-  /* Radial mask isolating the outer perimeter of the logo */
-  -webkit-mask-image: radial-gradient(circle, transparent 40%, black 46%);
-  mask-image: radial-gradient(circle, transparent 40%, black 46%);
+  /* Pure blue/cyan glowing aura orbiting the outside of the logo */
+  filter: drop-shadow(0 0 10px #00e5ff) drop-shadow(0 0 25px #0066ff);
 }
 
 .tracer-left {
   background: conic-gradient(
     from 180deg,
-    rgba(0, 102, 255, 0) 0deg,
-    rgba(0, 102, 255, 0) 310deg,
-    rgba(0, 102, 255, 0.8) 335deg,
-    #00f0ff 352deg,
+    transparent 0deg,
+    transparent 310deg,
+    rgba(0, 102, 255, 0.4) 330deg,
+    #00e5ff 352deg,
     #0066ff 360deg
   );
   animation: trace-left 3.5s linear 1.0s forwards;
@@ -390,10 +381,10 @@ body.cursor-freakout .dot-visual {
   background: conic-gradient(
     from 180deg,
     #0066ff 0deg,
-    #00f0ff 8deg,
-    rgba(0, 102, 255, 0.8) 25deg,
-    rgba(0, 102, 255, 0) 50deg,
-    rgba(0, 102, 255, 0) 360deg
+    #00e5ff 8deg,
+    rgba(0, 102, 255, 0.4) 30deg,
+    transparent 50deg,
+    transparent 360deg
   );
   animation: trace-right 3.5s linear 1.0s forwards;
 }

@@ -351,16 +351,14 @@ body.cursor-freakout .dot-visual {
 .tracer-container {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
-  -webkit-mask-image: radial-gradient(circle, transparent 58%, black 62%), url('logo.png');
-  -webkit-mask-size: 100% 100%, contain;
+  -webkit-mask-image: url('logo.png');
+  -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
-  -webkit-mask-composite: source-in;
-  mask-image: radial-gradient(circle, transparent 58%, black 62%), url('logo.png');
-  mask-size: 100% 100%, contain;
+  mask-image: url('logo.png');
+  mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
-  mask-composite: intersect;
   z-index: 2;
   opacity: 0;
   animation: fade-in-tracers 0.2s linear 0.8s forwards;
@@ -371,6 +369,9 @@ body.cursor-freakout .dot-visual {
   top: 0; left: 0; width: 100%; height: 100%;
   border-radius: 50%;
   filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.8));
+  /* Inner radial mask cuts out the center eagle, isolating the outer ring */
+  -webkit-mask-image: radial-gradient(circle, transparent 105px, black 112px);
+  mask-image: radial-gradient(circle, transparent 105px, black 112px);
 }
 
 .tracer-left {

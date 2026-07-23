@@ -1239,6 +1239,7 @@ function stopArchiveAmbientDrone() {
 
 let activeBuzzerOsc = null;
 let activeBuzzerLfo = null;
+let activeBuzzerGateLfo = null;
 let activeBuzzerGain = null;
 
 let activeAmbientFxOscs = [];
@@ -1251,37 +1252,53 @@ function startLoopingBuzzerAndAmbientFX(type) {
   
   const now = archiveAudioCtx.currentTime;
   
-  // 1. High-intensity Industrial Emergency Siren Buzzer (Sweeps back & forth at 3.5Hz)
+  // 1. High-intensity Industrial Emergency Siren Buzzer (FM Tremolo + Square Gated Pulse)
   try {
     activeBuzzerOsc = archiveAudioCtx.createOscillator();
     activeBuzzerLfo = archiveAudioCtx.createOscillator();
+    activeBuzzerGateLfo = archiveAudioCtx.createOscillator();
     const lfoGain = archiveAudioCtx.createGain();
+    const gateLfoGain = archiveAudioCtx.createGain();
+    const gateGain = archiveAudioCtx.createGain();
     activeBuzzerGain = archiveAudioCtx.createGain();
     const bandpass = archiveAudioCtx.createBiquadFilter();
     
     activeBuzzerOsc.type = 'sawtooth';
-    activeBuzzerOsc.frequency.setValueAtTime(680, now);
+    activeBuzzerOsc.frequency.setValueAtTime(115, now);
     
-    activeBuzzerLfo.type = 'sine';
-    activeBuzzerLfo.frequency.setValueAtTime(3.5, now); // Sweeps 3.5 times per second
-    
-    lfoGain.gain.setValueAtTime(240, now); // Sweep range (680Hz +/- 240Hz)
+    activeBuzzerLfo.type = 'square';
+    activeBuzzerLfo.frequency.setValueAtTime(15, now); // 15Hz tremolo buzzer modulation
+    lfoGain.gain.setValueAtTime(120, now);
     
     bandpass.type = 'bandpass';
-    bandpass.frequency.setValueAtTime(800, now);
-    bandpass.Q.setValueAtTime(4.0, now);
+    bandpass.frequency.setValueAtTime(880, now);
+    bandpass.Q.setValueAtTime(4.5, now);
+    
+    // Gating pulse: 2.2 Hz (alarm rate)
+    activeBuzzerGateLfo.type = 'square';
+    activeBuzzerGateLfo.frequency.setValueAtTime(2.2, now);
+    
+    gateLfoGain.gain.setValueAtTime(0.5, now);
+    gateGain.gain.setValueAtTime(0.5, now); // Offsets between [0, 1]
     
     activeBuzzerGain.gain.setValueAtTime(0, now);
-    activeBuzzerGain.gain.linearRampToValueAtTime(0.38, now + 0.05); // Louder volume
+    activeBuzzerGain.gain.linearRampToValueAtTime(0.42, now + 0.05); // Louder volume!
     
+    // Connections
     activeBuzzerLfo.connect(lfoGain);
     lfoGain.connect(activeBuzzerOsc.frequency);
     activeBuzzerOsc.connect(bandpass);
-    bandpass.connect(activeBuzzerGain);
+    
+    activeBuzzerGateLfo.connect(gateLfoGain);
+    gateLfoGain.connect(gateGain.gain);
+    
+    bandpass.connect(gateGain);
+    gateGain.connect(activeBuzzerGain);
     activeBuzzerGain.connect(archiveAudioCtx.destination);
     
     activeBuzzerOsc.start(now);
     activeBuzzerLfo.start(now);
+    activeBuzzerGateLfo.start(now);
   } catch (e) {}
   
   // 2. Extra Unique Subtle Sound Effects for each Attack Animation
@@ -1470,6 +1487,7 @@ function stopLoopingBuzzerAndAmbientFX() {
     setTimeout(() => {
       if (activeBuzzerOsc) { activeBuzzerOsc.stop(); activeBuzzerOsc = null; }
       if (activeBuzzerLfo) { activeBuzzerLfo.stop(); activeBuzzerLfo = null; }
+      if (activeBuzzerGateLfo) { activeBuzzerGateLfo.stop(); activeBuzzerGateLfo = null; }
     }, 150);
   } catch (e) {}
   

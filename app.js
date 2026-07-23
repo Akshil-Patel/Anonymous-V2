@@ -405,22 +405,17 @@ function startHackerBootSequence(clickX, clickY) {
   if (bootTimer) clearTimeout(bootTimer);
 
   state.phase = 2;
-
-  // Try initializing audio
   initAudio();
   playClickSound(200, 0.2, 0.2);
   playSweepSound();
 
-  // Add a ripple at center
   ripples.push({
     x: clickX, y: clickY,
     radius: 0,
     maxRadius: Math.max(width, height) * 0.9,
-    speed: 6.5,
-    alpha: 0.8,
+    speed: 6.5, alpha: 0.8,
   });
 
-  // Identify closest node
   let closestNodeKey = 'command';
   let minDist = Infinity;
   for (const [key, node] of Object.entries(nodes)) {
@@ -435,61 +430,8 @@ function startHackerBootSequence(clickX, clickY) {
     progress: 0, targetNode: closestNodeKey,
   });
 
-  // ── FLIP: Logo flies from center loader to navbar ──
-  const srcLogo  = document.getElementById('quantum-logo');
-  const flyLogo  = document.getElementById('flying-logo');
-  const navLogo  = document.querySelector('.nav-logo-clean');
   const dormantScreen = document.getElementById('dormant-screen');
-
-  if (srcLogo && flyLogo && navLogo) {
-    const srcRect = srcLogo.getBoundingClientRect();
-    const dstRect = navLogo.getBoundingClientRect();
-
-    // Start: same position/size as the loader logo
-    flyLogo.style.width   = srcRect.width  + 'px';
-    flyLogo.style.height  = srcRect.height + 'px';
-    flyLogo.style.top     = srcRect.top    + 'px';
-    flyLogo.style.left    = srcRect.left   + 'px';
-    flyLogo.style.opacity = '1';
-    flyLogo.style.transition = 'none';
-    flyLogo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(59,130,246,0.5))';
-
-    // Hide the original logo inside loader immediately
-    srcLogo.style.opacity = '0';
-
-    // Calculate delta to nav logo (using transform for GPU acceleration)
-    const dx = dstRect.left - srcRect.left + (dstRect.width  - srcRect.width)  / 2;
-    const dy = dstRect.top  - srcRect.top  + (dstRect.height - srcRect.height) / 2;
-    const scaleX = dstRect.width  / srcRect.width;
-    const scaleY = dstRect.height / srcRect.height;
-
-    // Force paint, then animate
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        flyLogo.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease 0.4s, filter 0.6s ease';
-        flyLogo.style.transform  = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
-        flyLogo.style.opacity    = '0';
-        flyLogo.style.filter     = 'none';
-
-        // Fade out dormant screen while logo is in flight
-        if (dormantScreen) {
-          dormantScreen.style.transition = 'opacity 0.5s ease 0.3s';
-          dormantScreen.style.opacity = '0';
-          setTimeout(() => {
-            dormantScreen.classList.remove('active');
-            dormantScreen.classList.add('fade-out');
-            flyLogo.style.opacity = '0';
-          }, 900);
-        }
-      });
-    });
-
-  } else {
-    // Fallback: plain fade out
-    if (dormantScreen) {
-      dormantScreen.classList.add('fade-out');
-    }
-  }
+  if (dormantScreen) dormantScreen.classList.add('fade-out');
 }
 
 // User can click early to bypass wait, but it is not required
@@ -499,12 +441,12 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Auto-boot system after 2.8 seconds of quantum orbit loader animation
+// Auto-boot after ring finishes drawing (0.3s delay + 2.2s animation = 2.5s)
 bootTimer = setTimeout(() => {
   if (state.phase === 1) {
     startHackerBootSequence(window.innerWidth / 2, window.innerHeight / 2);
   }
-}, 2800);
+}, 2600);
 
 // Global AudioContext Resumer for first user interaction (bypasses browser autoplay policy)
 const resumeAudioOnInteraction = () => {

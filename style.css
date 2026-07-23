@@ -322,137 +322,60 @@ body.cursor-freakout .dot-visual {
 }
 
 /* -------------------------------------------------------------
-   PREMIUM QUANTUM ORBIT LOADER
+   MINIMAL LOADER — logo + single ring drawing itself
    ------------------------------------------------------------- */
-.quantum-loader {
+.loader-wrap {
   position: relative;
-  width: 240px;
-  height: 240px;
+  width: 160px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
-/* Three concentric orbital rings */
-.q-ring {
+.loader-ring-svg {
   position: absolute;
-  border-radius: 50%;
-  border: 1px solid transparent;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform: rotate(-90deg); /* Start drawing from the top */
 }
 
-.q-ring-1 {
-  width: 240px;
-  height: 240px;
-  border-color: rgba(59, 130, 246, 0.15);
-  border-top-color: #3b82f6;
-  animation: q-spin 3.2s linear infinite;
-  box-shadow: 0 0 18px rgba(59, 130, 246, 0.2) inset;
+.loader-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 1;
 }
 
-.q-ring-2 {
-  width: 185px;
-  height: 185px;
-  border-color: rgba(96, 165, 250, 0.1);
-  border-bottom-color: #60a5fa;
-  animation: q-spin 2.1s linear infinite reverse;
+.loader-ring-fill {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  /* Circumference = 2π×72 ≈ 452.4 */
+  stroke-dasharray: 452;
+  stroke-dashoffset: 452;
+  filter: drop-shadow(0 0 6px #3b82f6) drop-shadow(0 0 14px rgba(59,130,246,0.4));
+  animation: ring-draw 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
 }
 
-.q-ring-3 {
-  width: 135px;
-  height: 135px;
-  border-color: rgba(147, 197, 253, 0.08);
-  border-right-color: rgba(147, 197, 253, 0.6);
-  animation: q-spin 1.6s linear infinite;
-}
-
-/* Satellite dots orbiting on the rings */
-.q-dot {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.q-dot-1 {
-  width: 7px;
-  height: 7px;
-  background: #60a5fa;
-  box-shadow: 0 0 12px #3b82f6, 0 0 24px rgba(59, 130, 246, 0.5);
-  animation: orbit-dot-1 3.2s linear infinite;
-}
-
-.q-dot-2 {
-  width: 5px;
-  height: 5px;
-  background: #93c5fd;
-  box-shadow: 0 0 8px #60a5fa, 0 0 16px rgba(96, 165, 250, 0.4);
-  animation: orbit-dot-2 2.1s linear infinite reverse;
-}
-
-.q-dot-3 {
-  width: 4px;
-  height: 4px;
-  background: #bfdbfe;
-  box-shadow: 0 0 6px #93c5fd;
-  animation: orbit-dot-3 1.6s linear infinite;
-}
-
-.quantum-logo {
-  width: 100px;
-  height: 100px;
+.loader-logo {
+  width: 72px;
+  height: 72px;
   object-fit: contain;
-  z-index: 5;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
-  animation: quantum-logo-pop 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-  transition: opacity 0.3s ease;
-}
-
-/* Orbital dot keyframes — each traces its ring radius */
-@keyframes orbit-dot-1 {
-  0%   { transform: translate(0px, -120px); }
-  25%  { transform: translate(120px, 0px);  }
-  50%  { transform: translate(0px, 120px);  }
-  75%  { transform: translate(-120px, 0px); }
-  100% { transform: translate(0px, -120px); }
-}
-
-@keyframes orbit-dot-2 {
-  0%   { transform: translate(92.5px, 0px);   }
-  25%  { transform: translate(0px, 92.5px);   }
-  50%  { transform: translate(-92.5px, 0px);  }
-  75%  { transform: translate(0px, -92.5px);  }
-  100% { transform: translate(92.5px, 0px);   }
-}
-
-@keyframes orbit-dot-3 {
-  0%   { transform: translate(0px, 67.5px);  }
-  25%  { transform: translate(-67.5px, 0px); }
-  50%  { transform: translate(0px, -67.5px); }
-  75%  { transform: translate(67.5px, 0px);  }
-  100% { transform: translate(0px, 67.5px);  }
-}
-
-@keyframes q-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@keyframes quantum-logo-pop {
-  0%   { opacity: 0; transform: scale(0.8); }
-  60%  { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-/* -------------------------------------------
-   LOGO FLIP TRANSITION (flies to navbar)
-   ------------------------------------------- */
-.flying-logo {
-  position: fixed;
-  pointer-events: none;
-  z-index: 10000;
-  object-fit: contain;
+  z-index: 2;
   opacity: 0;
-  will-change: transform, opacity, width, height;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.25));
+  animation: logo-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+
+@keyframes ring-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes logo-fade-up {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* -------------------------------------------------------------

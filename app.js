@@ -458,13 +458,13 @@ const resumeAudioOnInteraction = () => {
   if (archiveAudioCtx && archiveAudioCtx.state === 'suspended') {
     archiveAudioCtx.resume();
   }
-  
+
   // Restart drone if in the hallway
   const badge = document.getElementById('archive-year-badge');
   if (badge && badge.classList.contains('is-visible') && !isMusicSequencerActive) {
     startArchiveAmbientDrone();
   }
-  
+
   // Remove self
   const events = ['click', 'mousedown', 'keydown', 'touchstart', 'wheel', 'mousemove'];
   events.forEach(evt => window.removeEventListener(evt, resumeAudioOnInteraction));
@@ -1823,7 +1823,7 @@ function startExhibitEffect(type) {
       });
     }
   } else if (type === 'iloveyou') {
-    // Spawn falling VBScript heart rain
+    // Spawn falling VBScript heart rain across the full screen
     for (let i = 0; i < 40; i++) {
       effectParticles.push({
         type: 'heart',
@@ -1958,10 +1958,13 @@ function renderEffectLoop() {
       ctx.fillText(p.symbols[Math.floor(p.time) % p.symbols.length], head.x + 8, head.y + 4);
     });
   } else if (activeEffectType === 'iloveyou') {
-    // Render Falling VBScript & Heart Matrix Rain
+    // Render Falling VBScript & Heart Matrix Rain across the full screen
     effectParticles.forEach(p => {
       p.y += p.vy;
-      if (p.y > h) p.y = -20;
+      if (p.y > h) {
+        p.y = -20;
+        p.x = Math.random() * w;
+      }
 
       ctx.fillStyle = `rgba(244, 63, 94, ${p.opacity})`;
       ctx.font = `${p.size}px sans-serif`;
@@ -2010,14 +2013,16 @@ function renderEffectLoop() {
       ctx.shadowBlur = 0;
     });
   } else if (activeEffectType === 'wannacry') {
-    // Render EternalBlue Red Shockwave Rings centered to the screen
+    // Render EternalBlue Red Shockwave Rings, epicenter tracking the cursor
+    const wcCx = effectMouseX || w / 2;
+    const wcCy = effectMouseY || h / 2;
     effectParticles.forEach(p => {
       p.r += 2.5;
       if (p.r > p.maxR) p.r = 0;
       ctx.strokeStyle = `rgba(225, 29, 72, ${1 - p.r / p.maxR})`;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(w / 2, h / 2, p.r, 0, Math.PI * 2);
+      ctx.arc(wcCx, wcCy, p.r, 0, Math.PI * 2);
       ctx.stroke();
     });
   } else if (activeEffectType === 'solarwinds') {
@@ -2122,25 +2127,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ─────────────────────────────────────────────
-   FOOTER — sticky reveal + content parallax
-   Archive scrolls over the pure black footer.
-   Inner content moves at 40% speed for depth.
+   FOOTER — sticky reveal + springy staggered lift
    ───────────────────────────────────────────── */
 (function initFooter() {
-  const footer    = document.getElementById('site-footer');
-  const inner     = footer && footer.querySelector('.footer-inner');
-  const liftEls   = document.querySelectorAll('.footer-lift');
+  const footer = document.getElementById('site-footer');
+  const inner = footer && footer.querySelector('.footer-inner');
+  const liftEls = document.querySelectorAll('.footer-lift');
 
   if (!footer || !inner) return;
 
-  // ── Staggered lift: fire when footer becomes visible ──
+  // ── Staggered spring lift: fire sequentially when footer comes into view ──
   const liftObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
+      
       liftEls.forEach(el => {
         const delay = parseInt(el.dataset.liftDelay || 0, 10);
-        setTimeout(() => el.classList.add('is-visible'), delay);
+        setTimeout(() => {
+          el.classList.add('is-visible');
+          // Brief subtle glow pulse on arrival for fun cyber feel
+          el.classList.add('lift-pulse');
+          setTimeout(() => el.classList.remove('lift-pulse'), 600);
+        }, delay);
       });
+      
       liftObserver.disconnect();
     });
   }, { threshold: 0.05 });
@@ -2148,14 +2158,11 @@ document.addEventListener('DOMContentLoaded', () => {
   liftObserver.observe(footer);
 
   // ── Content counter-parallax ──
-  // As the archive scrolls OVER the sticky footer, the inner content
-  // drifts upward at 40% speed — creating a genuine parallax depth.
   function onScroll() {
-    const rect       = footer.getBoundingClientRect();
-    const footerH    = footer.offsetHeight;
-    // 0 = footer top just entering viewport, 1 = fully visible
-    const progress   = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + footerH)));
-    const shift      = (1 - progress) * 40; // start 40px low, settle at 0
+    const rect = footer.getBoundingClientRect();
+    const footerH = footer.offsetHeight;
+    const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + footerH)));
+    const shift = (1 - progress) * 35;
     inner.style.transform = `translateY(${shift}px)`;
   }
 

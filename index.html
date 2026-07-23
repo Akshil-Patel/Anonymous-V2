@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,9 +8,12 @@
   <!-- Modern Premium Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <!-- Floating Glass Navbar -->
   <header id="main-nav" class="glass-nav hidden">
@@ -19,29 +23,55 @@
     </div>
     <div class="nav-right">
       <a href="#home" class="nav-link active" data-nav-index="0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
         <span class="nav-text">HOME</span>
       </a>
       <span class="nav-divider"></span>
       <a href="#about" class="nav-link" data-nav-index="1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
         <span class="nav-text">ABOUT</span>
       </a>
       <span class="nav-divider"></span>
       <a href="#events" class="nav-link" data-nav-index="2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+          <line x1="16" x2="16" y1="2" y2="6"></line>
+          <line x1="8" x2="8" y1="2" y2="6"></line>
+          <line x1="3" x2="21" y1="10" y2="10"></line>
+        </svg>
         <span class="nav-text">EVENTS</span>
       </a>
       <span class="nav-divider"></span>
       <a href="#join" class="nav-link" data-nav-index="3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <line x1="19" x2="19" y1="8" y2="14"></line>
+          <line x1="22" x2="16" y1="11" y2="11"></line>
+        </svg>
         <span class="nav-text">JOIN US</span>
       </a>
       <span class="nav-divider"></span>
-      
+
       <!-- Ambient Audio Controls -->
       <button id="audio-toggle" class="nav-audio-toggle" aria-label="Toggle audio">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
         <span class="audio-wave">
           <span class="bar"></span>
           <span class="bar"></span>
@@ -62,7 +92,8 @@
   <!-- Phase 1: Dormant State Screen (Click to Initialize) -->
   <div id="dormant-screen" class="active">
     <div class="terminal-loader">
-      <div class="cmd-line"><span class="prompt">guest@anonymous:~$</span> <span id="dormant-cmd">connect --hq</span><span class="cursor">_</span></div>
+      <div class="cmd-line"><span class="prompt">guest@anonymous:~$</span> <span id="dormant-cmd">connect
+          --hq</span><span class="cursor">_</span></div>
       <div id="dormant-prompt" class="dormant-hint">CLICK TO ESTABLISH SECURE LINK</div>
     </div>
   </div>
@@ -77,9 +108,7 @@
 
     <!-- Interactive Rooms / Network Navigation Nodes -->
     <nav id="network-navigation">
-      <!-- These nodes will be positioned dynamically or statically in a sleek minimalist layout.
-           We'll use absolute positions matching the canvas node points. -->
-      <a href="#command-center" class="nav-node" data-room="command" id="node-command" style="top: 22%; left: 45%;">
+      <a href="command.html" class="nav-node" data-room="command" id="node-command" style="top: 22%; left: 45%;">
         <div class="node-ring"></div>
         <span class="node-label">COMMAND CENTER</span>
         <div class="node-card">
@@ -88,7 +117,7 @@
         </div>
       </a>
 
-      <a href="#operations" class="nav-node" data-room="operations" id="node-operations" style="top: 34%; left: 20%;">
+      <a href="operations.html" class="nav-node" data-room="operations" id="node-operations" style="top: 34%; left: 20%;">
         <div class="node-ring"></div>
         <span class="node-label">OPERATIONS</span>
         <div class="node-card">
@@ -97,7 +126,8 @@
         </div>
       </a>
 
-      <a href="#intelligence" class="nav-node" data-room="intelligence" id="node-intelligence" style="top: 26%; left: 75%;">
+      <a href="intelligence.html" class="nav-node" data-room="intelligence" id="node-intelligence"
+        style="top: 26%; left: 75%;">
         <div class="node-ring"></div>
         <span class="node-label">INTELLIGENCE</span>
         <div class="node-card">
@@ -106,7 +136,7 @@
         </div>
       </a>
 
-      <a href="#agents" class="nav-node" data-room="agents" id="node-agents" style="top: 74%; left: 16%;">
+      <a href="agents.html" class="nav-node" data-room="agents" id="node-agents" style="top: 74%; left: 16%;">
         <div class="node-ring"></div>
         <span class="node-label">AGENTS</span>
         <div class="node-card">
@@ -115,7 +145,7 @@
         </div>
       </a>
 
-      <a href="#cyber-lab" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 76%; left: 38%;">
+      <a href="cyber-lab.html" class="nav-node" data-room="cyber-lab" id="node-cyber-lab" style="top: 76%; left: 38%;">
         <div class="node-ring"></div>
         <span class="node-label">CYBER LAB</span>
         <div class="node-card">
@@ -124,7 +154,7 @@
         </div>
       </a>
 
-      <a href="#forensics" class="nav-node" data-room="forensics" id="node-forensics" style="top: 72%; left: 62%;">
+      <a href="forensics.html" class="nav-node" data-room="forensics" id="node-forensics" style="top: 72%; left: 62%;">
         <div class="node-ring"></div>
         <span class="node-label">FORENSICS</span>
         <div class="node-card">
@@ -133,7 +163,7 @@
         </div>
       </a>
 
-      <a href="#vault" class="nav-node" data-room="vault" id="node-vault" style="top: 78%; left: 84%;">
+      <a href="vault.html" class="nav-node" data-room="vault" id="node-vault" style="top: 78%; left: 84%;">
         <div class="node-ring"></div>
         <span class="node-label">VAULT</span>
         <div class="node-card">
@@ -144,6 +174,193 @@
     </nav>
   </main>
 
+  <!-- ═══════════════════════════════════════════════════════════
+       THE ARCHIVE — Cyber History Spatial Museum
+       Unboxed, spatial exhibits that naturally react to hover & motion.
+       ═══════════════════════════════════════════════════════════ -->
+  <section id="archive-hallway" aria-label="The Archive — Cybersecurity History Museum">
+
+    <!-- Real-Time Dramatic Virus Takeover Effect Canvas -->
+    <canvas id="archive-effect-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 15; opacity: 0; transition: opacity 0.5s ease;"></canvas>
+
+    <!-- Seamless transition from hero -->
+    <div class="archive-fade-in" aria-hidden="true"></div>
+
+    <!-- Floating Year Counter indicator -->
+    <div id="archive-year-badge" class="archive-year-badge">
+      <span class="year-prefix">THE ARCHIVE // YEAR:</span>
+      <span id="archive-year-val" class="year-val">1988</span>
+    </div>
+
+    <!-- Minimal Editorial Section Header -->
+    <div class="archive-header">
+      <span class="archive-tag">HALLWAY 04 // LANDMARK ATTACK ARTIFACTS</span>
+      <h2 class="archive-title">THE ARCHIVE</h2>
+      <p class="archive-subtitle">Historical breakthroughs that defined modern cybersecurity.</p>
+    </div>
+
+    <!-- Open Spatial Exhibit Timeline Stream -->
+    <div class="archive-spatial-stream">
+
+      <!-- EXHIBIT 01: Morris Worm (1988) -->
+      <div class="spatial-exhibit" data-year="1988" data-exhibit="morris" id="exhibit-morris">
+        <div class="exhibit-spatial-visual">
+          <div class="morris-lens-container">
+            <div class="morris-crt-lens">
+              <div class="morris-code-stream" id="morris-stream-target">
+                <span>0x7FFF5FBFF800 FORK_CHILD PID:3891 REPLICATING...</span>
+                <span>/usr/ucb/fingerd BUFFER OVERFLOW SUCCESS</span>
+                <span>AUTOPROBE SUBNET 128.32.0.0/16 INJECTING...</span>
+                <span>6,000 ARPANET HOSTS OVERWHELMED</span>
+              </div>
+            </div>
+            <div class="morris-aura-ring"></div>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark">1988</div>
+          <h3 class="exhibit-name">MORRIS WORM</h3>
+          <p class="exhibit-desc">First self-replicating worm to paralyze 10% of the early Internet.</p>
+          <div class="exhibit-fact-tag">6,000 MACHINES // 10% OF INTERNET // FIRST CONVICTION</div>
+        </div>
+      </div>
+
+      <!-- EXHIBIT 02: ILOVEYOU (2000) -->
+      <div class="spatial-exhibit" data-year="2000" data-exhibit="iloveyou" id="exhibit-iloveyou">
+        <div class="exhibit-spatial-visual">
+          <div class="iloveyou-envelope-container">
+            <div class="envelope-icon-glyph">
+              <svg viewBox="0 0 24 24" class="envelope-svg"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <div class="love-letter-ripples">
+              <span class="love-fragment fragment-1">LOVE-LETTER-FOR-YOU.TXT.vbs</span>
+              <span class="love-fragment fragment-2">LOVE-LETTER-FOR-YOU.TXT.vbs</span>
+              <span class="love-fragment fragment-3">LOVE-LETTER-FOR-YOU.TXT.vbs</span>
+            </div>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark">2000</div>
+          <h3 class="exhibit-name">ILOVEYOU</h3>
+          <p class="exhibit-desc">Social engineering email worm that infected 50 million PCs in 10 days.</p>
+          <div class="exhibit-fact-tag">50,000,000 INFECTED // $10B DAMAGES // 10% GLOBAL PCS</div>
+        </div>
+      </div>
+
+      <!-- EXHIBIT 03: Stuxnet (2010) -->
+      <div class="spatial-exhibit" data-year="2010" data-exhibit="stuxnet" id="exhibit-stuxnet">
+        <div class="exhibit-spatial-visual">
+          <div class="stuxnet-gauge-container">
+            <div class="stuxnet-dial-ring">
+              <div class="dial-needle" id="stuxnet-needle-a"></div>
+              <div class="dial-needle dial-needle--sub" id="stuxnet-needle-b"></div>
+            </div>
+            <div class="stuxnet-telemetry-label">
+              <span class="fake-status">STATUS: NOMINAL</span>
+              <span class="hidden-alert">OVERHEAT OVERCLOCK</span>
+            </div>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark">2010</div>
+          <h3 class="exhibit-name">STUXNET</h3>
+          <p class="exhibit-desc">First physical cyber weapon, destroying 1,000 nuclear centrifuges while forging telemetry.</p>
+          <div class="exhibit-fact-tag">1,000 CENTRIFUGES // 4 ZERO-DAYS // FIRST CYBER WEAPON</div>
+        </div>
+      </div>
+
+      <!-- EXHIBIT 04: Mirai Botnet (2016) -->
+      <div class="spatial-exhibit" data-year="2016" data-exhibit="mirai" id="exhibit-mirai">
+        <div class="exhibit-spatial-visual">
+          <div class="mirai-swarm-container" id="mirai-swarm">
+            <div class="swarm-node node-01"></div>
+            <div class="swarm-node node-02"></div>
+            <div class="swarm-node node-03"></div>
+            <div class="swarm-node node-04"></div>
+            <div class="swarm-node node-05"></div>
+            <div class="swarm-node node-06"></div>
+            <div class="swarm-node node-07"></div>
+            <div class="swarm-node node-08"></div>
+            <div class="swarm-node node-09"></div>
+            <div class="swarm-node node-10"></div>
+            <div class="swarm-node node-11"></div>
+            <div class="swarm-node node-12"></div>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark">2016</div>
+          <h3 class="exhibit-name">MIRAI BOTNET</h3>
+          <p class="exhibit-desc">Armies of unsecured IoT cameras & routers weaponized into a 1.2 Tbps DDoS swarm.</p>
+          <div class="exhibit-fact-tag">600,000 IOT NODES // 1.2 TBS DDOS // DYN US EAST SHUTDOWN</div>
+        </div>
+      </div>
+
+      <!-- EXHIBIT 05: WannaCry (2017) -->
+      <div class="spatial-exhibit" data-year="2017" data-exhibit="wannacry" id="exhibit-wannacry">
+        <div class="exhibit-spatial-visual">
+          <div class="wannacry-globe-container">
+            <svg class="spatial-globe-svg" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="80" class="globe-ring" />
+              <ellipse cx="100" cy="100" rx="80" ry="30" class="globe-equator" />
+              <ellipse cx="100" cy="100" rx="30" ry="80" class="globe-meridian" />
+              <circle cx="70" cy="80" r="4" class="bloom-dot bloom-1" />
+              <circle cx="130" cy="70" r="4" class="bloom-dot bloom-2" />
+              <circle cx="140" cy="120" r="4" class="bloom-dot bloom-3" />
+              <circle cx="90" cy="130" r="4" class="bloom-dot bloom-4" />
+            </svg>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark">2017</div>
+          <h3 class="exhibit-name">WANNACRY</h3>
+          <p class="exhibit-desc">Ransomware weaponizing NSA leaks to encrypt 200,000 computers across 150 nations.</p>
+          <div class="exhibit-fact-tag">200,000+ MACHINES // 150 COUNTRIES // 4 DAYS // ETERNALBLUE</div>
+        </div>
+      </div>
+
+      <!-- EXHIBIT 06: SolarWinds (2020) -->
+      <div class="spatial-exhibit" data-year="2020" data-exhibit="solarwinds" id="exhibit-solarwinds">
+        <div class="exhibit-spatial-visual">
+          <div class="solarwinds-chain-container" id="solarwinds-spatial-chain">
+            <div class="spatial-chain-node node-a">SOURCE</div>
+            <div class="spatial-chain-line line-a"></div>
+            <div class="spatial-chain-node node-b">SUNBURST</div>
+            <div class="spatial-chain-line line-b"></div>
+            <div class="spatial-chain-node node-c">BUILD</div>
+            <div class="spatial-chain-line line-c"></div>
+            <div class="spatial-chain-node node-d">TARGETS</div>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark">2020</div>
+          <h3 class="exhibit-name">SOLARWINDS (SUNBURST)</h3>
+          <p class="exhibit-desc">Silent supply-chain backdoor compromising 18,000 corporate & government networks.</p>
+          <div class="exhibit-fact-tag">18,000 ORGANIZATIONS // 9 MONTH SILENCE // GOVT INTEL</div>
+        </div>
+      </div>
+
+      <!-- EXHIBIT 07: ANONYMOUS PROTOCOL (The Handoff) -->
+      <div class="spatial-exhibit spatial-exhibit--handoff" data-year="PRESENT" data-exhibit="handoff" id="exhibit-handoff">
+        <div class="exhibit-spatial-visual">
+          <div class="handoff-portal-container">
+            <div class="portal-ring"></div>
+            <div class="portal-core"></div>
+          </div>
+        </div>
+        <div class="exhibit-meta-panel">
+          <div class="exhibit-year-mark year-mark--accent">PRESENT</div>
+          <h3 class="exhibit-name exhibit-name--accent">ANONYMOUS PROTOCOL</h3>
+          <p class="exhibit-desc">The history is still being written. Explore the active HQ sector decks below.</p>
+          <div class="exhibit-fact-tag fact-tag--accent">CLEARANCE VERIFIED // SECURE LINK ACTIVE</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

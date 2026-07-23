@@ -111,6 +111,9 @@ for (let i = 0; i < particleCount; i++) {
   });
 }
 
+// Cyber Data Streams
+const dataStreams = [];
+
 // Interactive Signal Waves (cursor click ripples)
 const ripples = [];
 
@@ -602,7 +605,7 @@ function updateSignalParticles() {
 // -------------------------------------------------------------
 function drawGrid() {
   ctx.save();
-  ctx.strokeStyle = 'rgba(59, 130, 246, 0.02)';
+  ctx.strokeStyle = 'rgba(59, 130, 246, 0.025)';
   ctx.lineWidth = 1;
   
   const gridSize = 80;
@@ -611,9 +614,12 @@ function drawGrid() {
   ctx.translate(state.zoom.x, state.zoom.y);
   ctx.scale(state.zoom.scale, state.zoom.scale);
   
-  // Add subtle parallax offset based on cursor movement
-  const pxOffsetX = state.cursor.x * 0.03;
-  const pxOffsetY = state.cursor.y * 0.03;
+  // Add subtle parallax offset based on cursor movement + autonomous drift
+  const timeDriftX = (Date.now() * 0.005) % gridSize;
+  const timeDriftY = (Date.now() * 0.005) % gridSize;
+  
+  const pxOffsetX = state.cursor.x * 0.03 + timeDriftX;
+  const pxOffsetY = state.cursor.y * 0.03 + timeDriftY;
   
   // Horizontal grid lines
   for (let y = 0; y < height * 2; y += gridSize) {
@@ -824,6 +830,44 @@ function drawRipples() {
   ctx.restore();
 }
 
+function drawDataStreams() {
+  ctx.save();
+  ctx.translate(state.zoom.x, state.zoom.y);
+  ctx.scale(state.zoom.scale, state.zoom.scale);
+  
+  for (let i = dataStreams.length - 1; i >= 0; i--) {
+    const stream = dataStreams[i];
+    
+    // Move stream
+    stream.x += stream.vx;
+    stream.y += stream.vy;
+    stream.progress += stream.speed;
+    
+    // Fade in and out based on progress
+    let alpha = stream.alpha;
+    if (stream.progress < 0.2) alpha = stream.alpha * (stream.progress / 0.2);
+    if (stream.progress > 0.8) alpha = stream.alpha * ((1 - stream.progress) / 0.2);
+    
+    // Draw stream streak
+    const grad = ctx.createLinearGradient(stream.x, stream.y, stream.x - stream.vx * stream.length, stream.y - stream.vy * stream.length);
+    grad.addColorStop(0, `rgba(59, 130, 246, ${alpha})`);
+    grad.addColorStop(1, `rgba(59, 130, 246, 0)`);
+    
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = stream.width;
+    ctx.beginPath();
+    ctx.moveTo(stream.x, stream.y);
+    ctx.lineTo(stream.x - stream.vx * stream.length, stream.y - stream.vy * stream.length);
+    ctx.stroke();
+    
+    if (stream.progress >= 1) {
+      dataStreams.splice(i, 1);
+    }
+  }
+  
+  ctx.restore();
+}
+
 // -------------------------------------------------------------
 // INTERACTIVE RIPPLES & VECTOR INTERACTION ON HOVER
 // -------------------------------------------------------------
@@ -856,12 +900,31 @@ setInterval(() => {
   addSignalParticle(randomConn.from, randomConn.to, 0);
 }, 2200);
 
+// Occasional Data Streams / Shooting Stars
+setInterval(() => {
+  if (state.phase < 4 || Math.random() > 0.4) return; // 40% chance every 3s
+  
+  const isHorizontal = Math.random() > 0.5;
+  const speed = Math.random() * 15 + 10;
+  
+  dataStreams.push({
+    x: isHorizontal ? (Math.random() > 0.5 ? 0 : width) : Math.random() * width,
+    y: isHorizontal ? Math.random() * height : (Math.random() > 0.5 ? 0 : height),
+    vx: isHorizontal ? (Math.random() > 0.5 ? speed : -speed) : 0,
+    vy: isHorizontal ? 0 : (Math.random() > 0.5 ? speed : -speed),
+    length: Math.random() * 20 + 10, // Trails based on velocity multiplier
+    width: Math.random() * 1.5 + 0.5,
+    alpha: Math.random() * 0.3 + 0.1,
+    progress: 0,
+    speed: Math.random() * 0.01 + 0.005 // Lifespan increment
+  });
+}, 3000);
+
 // -------------------------------------------------------------
 // CORE GAMING / ANIMATION FRAME LOOP
 // -------------------------------------------------------------
 function tick() {
-  ctx.fillStyle = colors.bgPrimary;
-  ctx.fillRect(0, 0, width, height);
+  ctx.clearRect(0, 0, width, height); // Clear instead of fillRect to let CSS background show
   
   // Interpolate camera matrices (Zoom & translation)
   state.zoom.scale += (state.zoom.targetScale - state.zoom.scale) * 0.06;
@@ -874,6 +937,7 @@ function tick() {
   
   // Draw base structures
   drawGrid();
+  drawDataStreams();
   drawParticles();
   drawNetworkLines();
   drawRipples();
@@ -989,3 +1053,583 @@ window.addEventListener('touchend', e => {
   touchEndY = e.changedTouches[0].screenY;
   handleSwipe();
 });
+
+// -------------------------------------------------------------
+// WEB AUDIO SYNTHESIZER — MUSICAL MUSEUM AMBIENT & VIRUS SOUNDS
+// Zero external audio files needed, 100% web audio synthesis
+// -------------------------------------------------------------
+let archiveAudioCtx = null;
+let museumChordTimer = null;
+let isMuseumMusicPlaying = false;
+
+function initArchiveAudio() {
+  if (!archiveAudioCtx) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) archiveAudioCtx = new AudioCtx();
+  }
+  if (archiveAudioCtx && archiveAudioCtx.state === 'suspended') {
+    archiveAudioCtx.resume();
+  }
+}
+
+// Melodic Ambient Chimes Progression (A minor 9th, F maj 7th, C maj 9th, G sus4)
+const museumChords = [
+  [220.00, 261.63, 329.63, 392.00, 493.88], // Am9
+  [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj7
+  [130.81, 164.81, 196.00, 246.94, 293.66], // Cmaj9
+  [196.00, 246.94, 293.66, 349.23, 440.00]  // Gsus4
+];
+let chordIndex = 0;
+let isTensionHover = false;
+
+function setTensionState(state) {
+  isTensionHover = state;
+}
+
+function playMuseumChordSwell() {
+  if (!archiveAudioCtx || !isMuseumMusicPlaying) return;
+  try {
+    const now = archiveAudioCtx.currentTime;
+    const mult = isTensionHover ? 1.5 : 1.0; // Pitch bend up during tension hover!
+    const notes = museumChords[chordIndex % museumChords.length];
+    chordIndex++;
+
+    notes.forEach((freq, idx) => {
+      const osc = archiveAudioCtx.createOscillator();
+      const gain = archiveAudioCtx.createGain();
+
+      osc.type = isTensionHover ? 'sawtooth' : (idx % 2 === 0 ? 'sine' : 'triangle');
+      osc.frequency.setValueAtTime(freq * mult, now + idx * 0.12);
+
+      gain.gain.setValueAtTime(0, now + idx * 0.12);
+      gain.gain.linearRampToValueAtTime(isTensionHover ? 0.03 : 0.015, now + idx * 0.12 + 0.8);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.12 + 3.5);
+
+      osc.connect(gain);
+      gain.connect(archiveAudioCtx.destination);
+
+      osc.start(now + idx * 0.12);
+      osc.stop(now + idx * 0.12 + 3.6);
+    });
+  } catch (e) {}
+}
+
+function startArchiveAmbientDrone() {
+  initArchiveAudio();
+  if (!archiveAudioCtx) return;
+  if (isMuseumMusicPlaying) return;
+
+  isMuseumMusicPlaying = true;
+  playMuseumChordSwell();
+  museumChordTimer = setInterval(() => {
+    if (isMuseumMusicPlaying) playMuseumChordSwell();
+  }, 4200);
+}
+
+function stopArchiveAmbientDrone() {
+  isMuseumMusicPlaying = false;
+  isTensionHover = false;
+  if (museumChordTimer) {
+    clearInterval(museumChordTimer);
+    museumChordTimer = null;
+  }
+}
+
+// Explosive Dramatic Attack Takeover Sound FX
+function playDramaticAttackTakeoverSound(type) {
+  initArchiveAudio();
+  if (!archiveAudioCtx) return;
+  try {
+    const now = archiveAudioCtx.currentTime;
+    
+    // Sub-bass Drop Osc
+    const subOsc = archiveAudioCtx.createOscillator();
+    const subGain = archiveAudioCtx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(160, now);
+    subOsc.frequency.exponentialRampToValueAtTime(35, now + 0.6);
+    subGain.gain.setValueAtTime(0.12, now);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    subOsc.connect(subGain);
+    subGain.connect(archiveAudioCtx.destination);
+    subOsc.start(now); subOsc.stop(now + 0.6);
+
+    // High Cyber Glitch Riser Osc
+    const riseOsc = archiveAudioCtx.createOscillator();
+    const riseGain = archiveAudioCtx.createGain();
+    riseOsc.type = type === 'stuxnet' || type === 'wannacry' ? 'sawtooth' : 'square';
+    riseOsc.frequency.setValueAtTime(200, now);
+    riseOsc.frequency.exponentialRampToValueAtTime(2400, now + 0.4);
+    riseGain.gain.setValueAtTime(0.05, now);
+    riseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    riseOsc.connect(riseGain);
+    riseGain.connect(archiveAudioCtx.destination);
+    riseOsc.start(now); riseOsc.stop(now + 0.45);
+  } catch (e) {}
+}
+
+// Unique Sound FX for each Exhibit Micro-Interaction
+function playExhibitSound(type) {
+  initArchiveAudio();
+  if (!archiveAudioCtx) return;
+  try {
+    const now = archiveAudioCtx.currentTime;
+    const osc = archiveAudioCtx.createOscillator();
+    const gain = archiveAudioCtx.createGain();
+
+    if (type === 'morris') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(150, now + 0.08);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.08);
+    } else if (type === 'iloveyou') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(659.25, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.25);
+    } else if (type === 'stuxnet') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.linearRampToValueAtTime(120, now + 0.15);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.15);
+    } else if (type === 'mirai') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, now);
+      osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.1);
+    } else if (type === 'wannacry') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(110, now + 0.3);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.3);
+    } else if (type === 'solarwinds') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(1760, now + 0.18);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.18);
+    } else {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.3);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.connect(gain);
+      osc.start(now); osc.stop(now + 0.3);
+    }
+  } catch (e) {}
+}
+
+// -------------------------------------------------------------
+// THE ARCHIVE — Spatial Cyber Museum Engine
+// -------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  const hallway = document.getElementById('archive-hallway');
+  const yearBadge = document.getElementById('archive-year-badge');
+  const yearVal = document.getElementById('archive-year-val');
+  const exhibits = document.querySelectorAll('.spatial-exhibit');
+
+  if (!hallway || exhibits.length === 0) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  ScrollTrigger.create({
+    trigger: hallway,
+    start: 'top 60%',
+    end: 'bottom 20%',
+    onEnter: () => {
+      if (yearBadge) yearBadge.classList.add('is-visible');
+      startArchiveAmbientDrone();
+    },
+    onLeave: () => {
+      if (yearBadge) yearBadge.classList.remove('is-visible');
+      stopArchiveAmbientDrone();
+    },
+    onEnterBack: () => {
+      if (yearBadge) yearBadge.classList.add('is-visible');
+      startArchiveAmbientDrone();
+    },
+    onLeaveBack: () => {
+      if (yearBadge) yearBadge.classList.remove('is-visible');
+      stopArchiveAmbientDrone();
+    }
+  });
+
+  exhibits.forEach((exhibitEl) => {
+    const year = exhibitEl.getAttribute('data-year');
+    const exhibitType = exhibitEl.getAttribute('data-exhibit');
+
+    ScrollTrigger.create({
+      trigger: exhibitEl,
+      start: 'top 70%',
+      end: 'bottom 30%',
+      onToggle: (self) => {
+        if (self.isActive) {
+          exhibits.forEach(e => e.classList.remove('is-active'));
+          exhibitEl.classList.add('is-active');
+
+          if (yearVal && year) {
+            yearVal.textContent = year;
+          }
+          playExhibitSound(exhibitType);
+        }
+      }
+    });
+
+    if (!prefersReducedMotion) {
+      const visualArea = exhibitEl.querySelector('.exhibit-spatial-visual');
+      if (visualArea) {
+        let hoverTimer = null;
+
+        const triggerInfection = () => {
+          document.body.className = document.body.className.replace(/\binfect-\S+/g, '').trim();
+          document.body.classList.add(`infect-${exhibitType}`);
+          playDramaticAttackTakeoverSound(exhibitType);
+          startExhibitEffect(exhibitType);
+        };
+
+        const clearInfection = () => {
+          if (hoverTimer) clearTimeout(hoverTimer);
+          setTensionState(false);
+          document.body.className = document.body.className.replace(/\binfect-\S+/g, '').trim();
+          stopExhibitEffect();
+        };
+
+        visualArea.addEventListener('mouseenter', () => {
+          setTensionState(true);
+          playExhibitSound(exhibitType);
+          hoverTimer = setTimeout(triggerInfection, 700);
+        });
+
+        visualArea.addEventListener('mousemove', (e) => {
+          effectMouseX = e.clientX;
+          effectMouseY = e.clientY;
+          const rect = visualArea.getBoundingClientRect();
+          const x = (e.clientX - rect.left - rect.width / 2) * 0.08;
+          const y = (e.clientY - rect.top - rect.height / 2) * 0.08;
+          visualArea.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        });
+
+        visualArea.addEventListener('mouseleave', () => {
+          visualArea.style.transform = 'translate3d(0, 0, 0)';
+          clearInfection();
+        });
+
+        visualArea.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) {
+            effectMouseX = e.touches[0].clientX;
+            effectMouseY = e.touches[0].clientY;
+          }
+          setTensionState(true);
+          playExhibitSound(exhibitType);
+          hoverTimer = setTimeout(triggerInfection, 500);
+        }, { passive: true });
+
+        visualArea.addEventListener('touchend', clearInfection);
+        visualArea.addEventListener('touchcancel', clearInfection);
+      }
+    }
+  });
+
+  const handoffExhibit = document.getElementById('exhibit-handoff');
+  if (handoffExhibit) {
+    handoffExhibit.addEventListener('click', () => {
+      playExhibitSound('handoff');
+      window.scrollTo({
+        top: handoffExhibit.offsetTop + handoffExhibit.offsetHeight + 50,
+        behavior: 'smooth'
+      });
+    });
+  }
+});
+
+// -------------------------------------------------------------
+// REAL-TIME DRAMATIC CANVAS ANIMATION ENGINE FOR ARCHIVE EXHIBITS
+// -------------------------------------------------------------
+let archiveEffectCanvas = null;
+let archiveEffectCtx = null;
+let activeEffectType = null;
+let effectParticles = [];
+let effectAnimFrame = null;
+let effectMouseX = 0;
+let effectMouseY = 0;
+
+function initArchiveEffectCanvas() {
+  archiveEffectCanvas = document.getElementById('archive-effect-canvas');
+  if (!archiveEffectCanvas) return;
+  archiveEffectCtx = archiveEffectCanvas.getContext('2d');
+  resizeEffectCanvas();
+  window.addEventListener('resize', resizeEffectCanvas);
+}
+
+function resizeEffectCanvas() {
+  if (!archiveEffectCanvas) return;
+  archiveEffectCanvas.width = window.innerWidth;
+  archiveEffectCanvas.height = window.innerHeight;
+}
+
+function startExhibitEffect(type) {
+  activeEffectType = type;
+  if (!archiveEffectCanvas) initArchiveEffectCanvas();
+  if (!archiveEffectCanvas) return;
+
+  archiveEffectCanvas.style.opacity = '1';
+  effectParticles = [];
+
+  if (type === 'morris') {
+    // Spawn 14 slithering phosphor green worms
+    for (let i = 0; i < 14; i++) {
+      const headX = Math.random() * window.innerWidth;
+      const headY = Math.random() * window.innerHeight;
+      const length = 12 + Math.floor(Math.random() * 8);
+      const points = [];
+      for (let j = 0; j < length; j++) points.push({ x: headX - j * 8, y: headY });
+      effectParticles.push({
+        type: 'worm',
+        points: points,
+        angle: Math.random() * Math.PI * 2,
+        speed: 2 + Math.random() * 2.5,
+        wiggleFreq: 0.15 + Math.random() * 0.1,
+        wiggleAmp: 0.8 + Math.random() * 0.5,
+        time: Math.random() * 100,
+        symbols: ['01', '0x7F', '/sh', 'fingerd', 'fork()', '128.32', 'PID:3891', 'WORM']
+      });
+    }
+  } else if (type === 'iloveyou') {
+    // Spawn falling VBScript heart rain
+    for (let i = 0; i < 40; i++) {
+      effectParticles.push({
+        type: 'heart',
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vy: 1.5 + Math.random() * 3,
+        size: 10 + Math.random() * 18,
+        text: Math.random() > 0.5 ? 'LOVE-LETTER-FOR-YOU.TXT.vbs' : '♥',
+        opacity: 0.4 + Math.random() * 0.6
+      });
+    }
+  } else if (type === 'stuxnet') {
+    // SCADA centrifuge sparks & rotor rings
+    for (let i = 0; i < 35; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 30 + Math.random() * 120;
+      effectParticles.push({
+        type: 'spark',
+        x: (effectMouseX || window.innerWidth / 2) + Math.cos(angle) * dist,
+        y: (effectMouseY || window.innerHeight / 2) + Math.sin(angle) * dist,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6,
+        life: 1,
+        color: Math.random() > 0.4 ? '#f43f5e' : '#fbbf24'
+      });
+    }
+  } else if (type === 'mirai') {
+    // DDoS laser beams shooting from screen edges to cursor
+    for (let i = 0; i < 16; i++) {
+      const side = Math.floor(Math.random() * 4);
+      let sx = 0, sy = 0;
+      if (side === 0) { sx = Math.random() * window.innerWidth; sy = 0; }
+      else if (side === 1) { sx = window.innerWidth; sy = Math.random() * window.innerHeight; }
+      else if (side === 2) { sx = Math.random() * window.innerWidth; sy = window.innerHeight; }
+      else { sx = 0; sy = Math.random() * window.innerHeight; }
+
+      effectParticles.push({
+        type: 'laser',
+        sx: sx,
+        sy: sy,
+        pulse: Math.random() * Math.PI * 2,
+        speed: 0.05 + Math.random() * 0.05
+      });
+    }
+  } else if (type === 'wannacry') {
+    // EternalBlue red shockwave rings
+    for (let i = 0; i < 6; i++) {
+      effectParticles.push({
+        type: 'ring',
+        r: i * 35,
+        maxR: 280,
+        opacity: 1 - i * 0.15
+      });
+    }
+  } else if (type === 'solarwinds') {
+    // SUNBURST backdoor data streams
+    for (let i = 0; i < 20; i++) {
+      effectParticles.push({
+        type: 'stream',
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: 3 + Math.random() * 5,
+        text: 'SUNBURST_BACKDOOR_PAYLOAD_0x' + Math.floor(Math.random() * 9999)
+      });
+    }
+  }
+
+  if (!effectAnimFrame) renderEffectLoop();
+}
+
+function stopExhibitEffect() {
+  activeEffectType = null;
+  if (archiveEffectCanvas) archiveEffectCanvas.style.opacity = '0';
+  if (effectAnimFrame) {
+    cancelAnimationFrame(effectAnimFrame);
+    effectAnimFrame = null;
+  }
+}
+
+function renderEffectLoop() {
+  if (!activeEffectType || !archiveEffectCtx) {
+    effectAnimFrame = null;
+    return;
+  }
+
+  const ctx = archiveEffectCtx;
+  const w = archiveEffectCanvas.width;
+  const h = archiveEffectCanvas.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  if (activeEffectType === 'morris') {
+    // Render Slithering Code Worms
+    effectParticles.forEach(p => {
+      p.time += p.wiggleFreq;
+      p.angle += Math.sin(p.time) * 0.1;
+      const head = p.points[0];
+      head.x += Math.cos(p.angle) * p.speed;
+      head.y += Math.sin(p.angle) * p.speed;
+
+      if (head.x < 0) head.x = w;
+      if (head.x > w) head.x = 0;
+      if (head.y < 0) head.y = h;
+      if (head.y > h) head.y = 0;
+
+      for (let j = p.points.length - 1; j > 0; j--) {
+        const seg = p.points[j];
+        const prev = p.points[j - 1];
+        const dx = prev.x - seg.x;
+        const dy = prev.y - seg.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 8) {
+          seg.x = prev.x - (dx / dist) * 8;
+          seg.y = prev.y - (dy / dist) * 8;
+        }
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(p.points[0].x, p.points[0].y);
+      for (let j = 1; j < p.points.length; j++) {
+        ctx.lineTo(p.points[j].x, p.points[j].y);
+      }
+      ctx.strokeStyle = 'rgba(0, 255, 102, 0.7)';
+      ctx.lineWidth = 4;
+      ctx.shadowColor = '#00ff66';
+      ctx.shadowBlur = 12;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#00ff66';
+      ctx.font = '10px monospace';
+      ctx.fillText(p.symbols[Math.floor(p.time) % p.symbols.length], head.x + 8, head.y + 4);
+    });
+  } else if (activeEffectType === 'iloveyou') {
+    // Render Falling VBScript & Heart Matrix Rain
+    effectParticles.forEach(p => {
+      p.y += p.vy;
+      if (p.y > h) p.y = -20;
+
+      ctx.fillStyle = `rgba(244, 63, 94, ${p.opacity})`;
+      ctx.font = `${p.size}px sans-serif`;
+      ctx.shadowColor = '#f43f5e';
+      ctx.shadowBlur = 10;
+      ctx.fillText(p.text, p.x, p.y);
+      ctx.shadowBlur = 0;
+    });
+  } else if (activeEffectType === 'stuxnet') {
+    // Render Spinning Centrifuge Rotor & SCADA Electrical Sparks
+    ctx.save();
+    ctx.translate(effectMouseX || w / 2, effectMouseY || h / 2);
+    ctx.strokeStyle = 'rgba(244, 63, 94, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 80 + Math.sin(Date.now() * 0.01) * 15, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    effectParticles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.02;
+      if (p.life <= 0) {
+        p.x = effectMouseX || w / 2;
+        p.y = effectMouseY || h / 2;
+        p.life = 1;
+      }
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  } else if (activeEffectType === 'mirai') {
+    // Render 1.2 Tbps DDoS Laser Beams
+    effectParticles.forEach(p => {
+      p.pulse += p.speed;
+      ctx.strokeStyle = `rgba(96, 165, 250, ${0.4 + Math.sin(p.pulse) * 0.3})`;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = '#60a5fa';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.moveTo(p.sx, p.sy);
+      ctx.lineTo(effectMouseX || w / 2, effectMouseY || h / 2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    });
+  } else if (activeEffectType === 'wannacry') {
+    // Render EternalBlue Red Shockwave Rings
+    effectParticles.forEach(p => {
+      p.r += 2.5;
+      if (p.r > p.maxR) p.r = 0;
+      ctx.strokeStyle = `rgba(225, 29, 72, ${1 - p.r / p.maxR})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(effectMouseX || w / 2, effectMouseY || h / 2, p.r, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+  } else if (activeEffectType === 'solarwinds') {
+    // Render SUNBURST Data Streams
+    effectParticles.forEach(p => {
+      p.x += p.vx;
+      if (p.x > w) p.x = -200;
+      ctx.fillStyle = '#06b6d4';
+      ctx.font = '11px monospace';
+      ctx.shadowColor = '#06b6d4';
+      ctx.shadowBlur = 8;
+      ctx.fillText(p.text, p.x, p.y);
+      ctx.shadowBlur = 0;
+    });
+  }
+
+  effectAnimFrame = requestAnimationFrame(renderEffectLoop);
+}
+
+
+
+
+

@@ -367,8 +367,8 @@ body.cursor-freakout .dot-visual {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   border-radius: 50%;
-  /* Massive neon glow around the tracer beams */
-  filter: drop-shadow(0 0 8px #00e5ff) drop-shadow(0 0 16px #00e5ff) drop-shadow(0 0 30px #00e5ff);
+  /* Massive neon glow around the tracer beams using the theme's blue accent */
+  filter: drop-shadow(0 0 5px #3b82f6) drop-shadow(0 0 12px #3b82f6) drop-shadow(0 0 25px rgba(59, 130, 246, 0.9));
   /* Safe percentage-based mask to clear the center without clipping small logos */
   -webkit-mask-image: radial-gradient(circle, transparent 35%, black 48%);
   mask-image: radial-gradient(circle, transparent 35%, black 48%);
@@ -377,10 +377,10 @@ body.cursor-freakout .dot-visual {
 .tracer-left {
   background: conic-gradient(
     from 180deg,
-    rgba(0, 229, 255, 0) 0deg,
-    rgba(0, 229, 255, 0) 330deg,
-    rgba(0, 229, 255, 1) 350deg,
-    #ffffff 360deg
+    rgba(59, 130, 246, 0) 0deg,
+    rgba(59, 130, 246, 0) 330deg,
+    rgba(59, 130, 246, 1) 350deg,
+    rgba(59, 130, 246, 1) 360deg /* Solid blue tip */
   );
   animation: trace-left 3.5s linear 1.0s forwards;
 }
@@ -388,10 +388,10 @@ body.cursor-freakout .dot-visual {
 .tracer-right {
   background: conic-gradient(
     from 180deg,
-    #ffffff 0deg,
-    rgba(0, 229, 255, 1) 10deg,
-    rgba(0, 229, 255, 0) 30deg,
-    rgba(0, 229, 255, 0) 360deg
+    rgba(59, 130, 246, 1) 0deg, /* Solid blue tip */
+    rgba(59, 130, 246, 1) 10deg,
+    rgba(59, 130, 246, 0) 30deg,
+    rgba(59, 130, 246, 0) 360deg
   );
   animation: trace-right 3.5s linear 1.0s forwards;
 }

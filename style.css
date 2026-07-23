@@ -1549,7 +1549,7 @@ body::before {
   opacity: 0.45;
   transform: translateY(30px) scale(0.97);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.65) 0%, rgba(5, 5, 8, 0) 75%);
   padding: 2.5rem 2rem;
   border-radius: 12px;
@@ -1665,8 +1665,8 @@ body::before {
   overflow: hidden;
   box-shadow: inset 0 0 35px rgba(0, 255, 102, 0.25), 0 0 30px rgba(0, 255, 102, 0.15);
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.6s ease,
-              box-shadow 0.6s ease;
+    border-color 0.6s ease,
+    box-shadow 0.6s ease;
 }
 
 .morris-lens-container:hover .morris-crt-lens {
@@ -1710,8 +1710,8 @@ body::before {
   color: rgba(244, 63, 94, 0.8);
   filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.6));
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              color 0.6s ease,
-              filter 0.6s ease;
+    color 0.6s ease,
+    filter 0.6s ease;
 }
 
 .envelope-svg {
@@ -1736,9 +1736,20 @@ body::before {
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.fragment-1 { top: 15%; left: 5%; }
-.fragment-2 { bottom: 20%; right: 0; }
-.fragment-3 { top: 50%; right: -15%; }
+.fragment-1 {
+  top: 15%;
+  left: 5%;
+}
+
+.fragment-2 {
+  bottom: 20%;
+  right: 0;
+}
+
+.fragment-3 {
+  top: 50%;
+  right: -15%;
+}
 
 .iloveyou-envelope-container:hover .envelope-icon-glyph {
   transform: scale(1.2);
@@ -1750,9 +1761,17 @@ body::before {
   opacity: 1;
 }
 
-.iloveyou-envelope-container:hover .fragment-1 { transform: translate(-10px, -15px); }
-.iloveyou-envelope-container:hover .fragment-2 { transform: translate(15px, 15px); }
-.iloveyou-envelope-container:hover .fragment-3 { transform: translate(20px, -10px); }
+.iloveyou-envelope-container:hover .fragment-1 {
+  transform: translate(-10px, -15px);
+}
+
+.iloveyou-envelope-container:hover .fragment-2 {
+  transform: translate(15px, 15px);
+}
+
+.iloveyou-envelope-container:hover .fragment-3 {
+  transform: translate(20px, -10px);
+}
 
 /* ─── 3. STUXNET SPATIAL VISUAL ─── */
 .stuxnet-gauge-container {
@@ -1869,18 +1888,65 @@ body::before {
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.node-01 { top: 20%; left: 20%; }
-.node-02 { top: 15%; left: 55%; }
-.node-03 { top: 30%; left: 80%; }
-.node-04 { top: 60%; left: 15%; }
-.node-05 { top: 50%; left: 45%; }
-.node-06 { top: 70%; left: 75%; }
-.node-07 { top: 80%; left: 35%; }
-.node-08 { top: 35%; left: 30%; }
-.node-09 { top: 25%; left: 90%; }
-.node-10 { top: 75%; left: 90%; }
-.node-11 { top: 85%; left: 60%; }
-.node-12 { top: 10%; left: 35%; }
+.node-01 {
+  top: 20%;
+  left: 20%;
+}
+
+.node-02 {
+  top: 15%;
+  left: 55%;
+}
+
+.node-03 {
+  top: 30%;
+  left: 80%;
+}
+
+.node-04 {
+  top: 60%;
+  left: 15%;
+}
+
+.node-05 {
+  top: 50%;
+  left: 45%;
+}
+
+.node-06 {
+  top: 70%;
+  left: 75%;
+}
+
+.node-07 {
+  top: 80%;
+  left: 35%;
+}
+
+.node-08 {
+  top: 35%;
+  left: 30%;
+}
+
+.node-09 {
+  top: 25%;
+  left: 90%;
+}
+
+.node-10 {
+  top: 75%;
+  left: 90%;
+}
+
+.node-11 {
+  top: 85%;
+  left: 60%;
+}
+
+.node-12 {
+  top: 10%;
+  left: 35%;
+}
 
 .mirai-swarm-container:hover .swarm-node {
   background: #60a5fa;
@@ -1888,12 +1954,29 @@ body::before {
   box-shadow: 0 0 15px #60a5fa;
 }
 
-.mirai-swarm-container:hover .node-01 { transform: translate(-10px, -10px) scale(1.3); }
-.mirai-swarm-container:hover .node-02 { transform: translate(5px, -15px) scale(1.4); }
-.mirai-swarm-container:hover .node-03 { transform: translate(15px, -5px) scale(1.2); }
-.mirai-swarm-container:hover .node-04 { transform: translate(-15px, 10px) scale(1.5); }
-.mirai-swarm-container:hover .node-05 { transform: scale(1.6); }
-.mirai-swarm-container:hover .node-06 { transform: translate(10px, 15px) scale(1.3); }
+.mirai-swarm-container:hover .node-01 {
+  transform: translate(-10px, -10px) scale(1.3);
+}
+
+.mirai-swarm-container:hover .node-02 {
+  transform: translate(5px, -15px) scale(1.4);
+}
+
+.mirai-swarm-container:hover .node-03 {
+  transform: translate(15px, -5px) scale(1.2);
+}
+
+.mirai-swarm-container:hover .node-04 {
+  transform: translate(-15px, 10px) scale(1.5);
+}
+
+.mirai-swarm-container:hover .node-05 {
+  transform: scale(1.6);
+}
+
+.mirai-swarm-container:hover .node-06 {
+  transform: translate(10px, 15px) scale(1.3);
+}
 
 /* ─── 5. WANNACRY SPATIAL VISUAL ─── */
 .wannacry-globe-container {
@@ -1912,7 +1995,9 @@ body::before {
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.globe-ring, .globe-equator, .globe-meridian {
+.globe-ring,
+.globe-equator,
+.globe-meridian {
   fill: none;
   stroke: rgba(255, 255, 255, 0.25);
   stroke-width: 1.2;
@@ -2012,8 +2097,13 @@ body::before {
 }
 
 @keyframes portal-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .handoff-portal-container:hover .portal-ring {
@@ -2087,7 +2177,7 @@ body::before {
 body.infect-morris #archive-hallway::after {
   opacity: 1;
   background: radial-gradient(circle at center, rgba(0, 255, 102, 0.12) 0%, rgba(0, 20, 5, 0.4) 100%),
-              repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0, 255, 102, 0.04) 3px, rgba(0, 255, 102, 0.04) 4px);
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0, 255, 102, 0.04) 3px, rgba(0, 255, 102, 0.04) 4px);
   animation: scanline-glitch 0.2s infinite linear;
 }
 
@@ -2150,8 +2240,13 @@ body.infect-solarwinds #exhibit-solarwinds {
 }
 
 @keyframes scanline-glitch {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(4px); }
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(4px);
+  }
 }
 
 /* -------------------------------------------------------------
@@ -2222,5 +2317,3 @@ body.infect-solarwinds #exhibit-solarwinds {
     gap: 6px;
   }
 }
-
-

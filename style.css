@@ -2554,3 +2554,122 @@ body.infect-solarwinds #exhibit-solarwinds {
     gap: 6px;
   }
 }
+
+/* ─────────────────────────────────────────────
+   SITE FOOTER — sticky parallax reveal
+   Pure black. Archive scrolls over it.
+   ───────────────────────────────────────────── */
+
+/* The archive section needs to sit above the footer */
+#archive-hallway {
+  position: relative;
+  z-index: 2;
+}
+
+#site-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: #000000;
+  border-top: none;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* The inner content counter-scrolls slightly for depth */
+.footer-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 4rem 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  will-change: transform;
+}
+
+/* ── Brand Row ── */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: brightness(0.7);
+}
+
+.footer-wordmark {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
+/* ── Nav Links Row ── */
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-link {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 2.5px;
+  color: rgba(255, 255, 255, 0.22);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.footer-link:hover {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ── Bottom Legal Row ── */
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.footer-legal {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 1.8px;
+  color: rgba(255, 255, 255, 0.14);
+}
+
+.footer-dot {
+  color: rgba(255, 255, 255, 0.1);
+  font-size: 0.6rem;
+}
+
+/* ── Lift Animation (JS IntersectionObserver-driven) ── */
+.footer-lift {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-lift.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

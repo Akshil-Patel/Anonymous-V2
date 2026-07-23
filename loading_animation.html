@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading Animation</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .logo-loader {
+    width: 300px;
+    height: 300px;
+    /* Logo base color (white) */
+    background-color: rgba(255, 255, 255, 1);
+    
+    /* Vertical blue shine moving from bottom to top */
+    background-image: linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(0, 150, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.95) 51%,
+      rgba(255, 255, 255, 0.05) 75%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    /* larger gradient so the bright band can move diagonally (start at top-right for reversed shine) */
+    background-size: 200% 200%;
+    background-position: 150% -50%;
+
+    /* Use the logo image as a mask so only the eagle shape is visible */
+    -webkit-mask-image: url('logo.png');
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-image: url('logo.png');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+
+    /* start fully hidden; after 1s fade in while shine begins */
+    opacity: 0;
+    transform: scale(0.98);
+    will-change: opacity, transform, background-position;
+    /* slowed down shine for a very slow diagonal sweep */
+    animation: fadeIn 1.5s cubic-bezier(.2,.9,.3,1) 1s forwards, shine 20s cubic-bezier(.22,.85,.35,1) 1s infinite;
+  }
+
+  /* Animate gradient background position to create a reversed shine moving diagonally (right→left, top→bottom) */
+  @keyframes shine {
+    0% { background-position: 150% -50%; }
+    100% { background-position: -50% 150%; }
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+  <div class="logo-loader"></div>
+</body>
+</html>

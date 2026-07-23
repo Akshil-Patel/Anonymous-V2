@@ -2113,6 +2113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
+
   // Hide cursor when leaving viewport
   document.addEventListener('mouseleave', () => {
     cursorDot.style.opacity = '0';
@@ -2120,7 +2121,44 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+/* ─────────────────────────────────────────────
+   FOOTER — sticky reveal + content parallax
+   Archive scrolls over the pure black footer.
+   Inner content moves at 40% speed for depth.
+   ───────────────────────────────────────────── */
+(function initFooter() {
+  const footer    = document.getElementById('site-footer');
+  const inner     = footer && footer.querySelector('.footer-inner');
+  const liftEls   = document.querySelectorAll('.footer-lift');
 
+  if (!footer || !inner) return;
 
+  // ── Staggered lift: fire when footer becomes visible ──
+  const liftObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      liftEls.forEach(el => {
+        const delay = parseInt(el.dataset.liftDelay || 0, 10);
+        setTimeout(() => el.classList.add('is-visible'), delay);
+      });
+      liftObserver.disconnect();
+    });
+  }, { threshold: 0.05 });
 
+  liftObserver.observe(footer);
 
+  // ── Content counter-parallax ──
+  // As the archive scrolls OVER the sticky footer, the inner content
+  // drifts upward at 40% speed — creating a genuine parallax depth.
+  function onScroll() {
+    const rect       = footer.getBoundingClientRect();
+    const footerH    = footer.offsetHeight;
+    // 0 = footer top just entering viewport, 1 = fully visible
+    const progress   = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + footerH)));
+    const shift      = (1 - progress) * 40; // start 40px low, settle at 0
+    inner.style.transform = `translateY(${shift}px)`;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}());

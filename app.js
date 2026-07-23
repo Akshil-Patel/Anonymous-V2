@@ -459,11 +459,28 @@ audioToggleBtn.addEventListener('click', (e) => {
   if (state.soundEnabled) {
     document.getElementById('audio-label').textContent = 'SOUND: ON';
     audioToggleBtn.classList.add('audio-active');
+    
+    // Resume audio contexts if suspended
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (archiveAudioCtx && archiveAudioCtx.state === 'suspended') archiveAudioCtx.resume();
+    
+    // Restart background sequencer if hallway is active
+    const badge = document.getElementById('archive-year-badge');
+    if (badge && badge.classList.contains('is-visible')) {
+      startArchiveAmbientDrone();
+    }
+    playClickSound(700, 0.05, 0.08);
   } else {
     document.getElementById('audio-label').textContent = 'SOUND: OFF';
     audioToggleBtn.classList.remove('audio-active');
+    
+    // Immediately shut down all sound engines
+    stopArchiveAmbientDrone();
+    stopLoopingBuzzerAndAmbientFX();
+    
+    if (audioCtx) audioCtx.suspend();
+    if (archiveAudioCtx) archiveAudioCtx.suspend();
   }
-  playClickSound(700, 0.05, 0.08);
 });
 // Activate visualizer animation by default since sound is on initially
 audioToggleBtn.classList.add('audio-active');
@@ -1220,10 +1237,265 @@ function stopArchiveAmbientDrone() {
   }
 }
 
+let activeBuzzerOsc = null;
+let activeBuzzerLfo = null;
+let activeBuzzerGain = null;
+
+let activeAmbientFxOscs = [];
+let activeAmbientFxGains = [];
+let activeAmbientIntervals = [];
+
+function startLoopingBuzzerAndAmbientFX(type) {
+  initArchiveAudio();
+  if (!archiveAudioCtx || !state.soundEnabled) return;
+  
+  const now = archiveAudioCtx.currentTime;
+  
+  // 1. High-intensity Industrial Emergency Siren Buzzer (Sweeps back & forth at 3.5Hz)
+  try {
+    activeBuzzerOsc = archiveAudioCtx.createOscillator();
+    activeBuzzerLfo = archiveAudioCtx.createOscillator();
+    const lfoGain = archiveAudioCtx.createGain();
+    activeBuzzerGain = archiveAudioCtx.createGain();
+    const bandpass = archiveAudioCtx.createBiquadFilter();
+    
+    activeBuzzerOsc.type = 'sawtooth';
+    activeBuzzerOsc.frequency.setValueAtTime(680, now);
+    
+    activeBuzzerLfo.type = 'sine';
+    activeBuzzerLfo.frequency.setValueAtTime(3.5, now); // Sweeps 3.5 times per second
+    
+    lfoGain.gain.setValueAtTime(240, now); // Sweep range (680Hz +/- 240Hz)
+    
+    bandpass.type = 'bandpass';
+    bandpass.frequency.setValueAtTime(800, now);
+    bandpass.Q.setValueAtTime(4.0, now);
+    
+    activeBuzzerGain.gain.setValueAtTime(0, now);
+    activeBuzzerGain.gain.linearRampToValueAtTime(0.38, now + 0.05); // Louder volume
+    
+    activeBuzzerLfo.connect(lfoGain);
+    lfoGain.connect(activeBuzzerOsc.frequency);
+    activeBuzzerOsc.connect(bandpass);
+    bandpass.connect(activeBuzzerGain);
+    activeBuzzerGain.connect(archiveAudioCtx.destination);
+    
+    activeBuzzerOsc.start(now);
+    activeBuzzerLfo.start(now);
+  } catch (e) {}
+  
+  // 2. Extra Unique Subtle Sound Effects for each Attack Animation
+  try {
+    if (type === 'morris') {
+      // Morris Worm: scratchy slithering noise sweeps (random plucky rustles)
+      const playSlither = () => {
+        if (!isMusicSequencerActive || !state.soundEnabled) return;
+        const slitherOsc = archiveAudioCtx.createOscillator();
+        const slitherGain = archiveAudioCtx.createGain();
+        const slitherFilter = archiveAudioCtx.createBiquadFilter();
+        
+        slitherOsc.type = 'triangle';
+        slitherOsc.frequency.setValueAtTime(60 + Math.random() * 80, archiveAudioCtx.currentTime);
+        slitherOsc.frequency.exponentialRampToValueAtTime(220 + Math.random() * 100, archiveAudioCtx.currentTime + 0.15);
+        
+        slitherFilter.type = 'bandpass';
+        slitherFilter.frequency.setValueAtTime(400, archiveAudioCtx.currentTime);
+        
+        slitherGain.gain.setValueAtTime(0.024, archiveAudioCtx.currentTime);
+        slitherGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.18);
+        
+        slitherOsc.connect(slitherFilter);
+        slitherFilter.connect(slitherGain);
+        slitherGain.connect(archiveAudioCtx.destination);
+        
+        slitherOsc.start();
+        slitherOsc.stop(archiveAudioCtx.currentTime + 0.2);
+      };
+      
+      playSlither();
+      const interval = setInterval(playSlither, 140);
+      activeAmbientIntervals.push(interval);
+      
+    } else if (type === 'iloveyou') {
+      // ILOVEYOU: glitchy falling heart crystalline drop pings
+      const playHeartDrop = () => {
+        if (!isMusicSequencerActive || !state.soundEnabled) return;
+        const dropOsc = archiveAudioCtx.createOscillator();
+        const dropGain = archiveAudioCtx.createGain();
+        
+        dropOsc.type = 'sine';
+        dropOsc.frequency.setValueAtTime(1600 + Math.random() * 1200, archiveAudioCtx.currentTime);
+        
+        dropGain.gain.setValueAtTime(0.018, archiveAudioCtx.currentTime);
+        dropGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.45);
+        
+        dropOsc.connect(dropGain);
+        dropGain.connect(archiveAudioCtx.destination);
+        
+        dropOsc.start();
+        dropOsc.stop(archiveAudioCtx.currentTime + 0.5);
+      };
+      
+      playHeartDrop();
+      const interval = setInterval(playHeartDrop, 280);
+      activeAmbientIntervals.push(interval);
+      
+    } else if (type === 'stuxnet') {
+      // Stuxnet: heavy resonant rotating motor centrifuge vibration
+      const motorOsc1 = archiveAudioCtx.createOscillator();
+      const motorOsc2 = archiveAudioCtx.createOscillator();
+      const motorGain = archiveAudioCtx.createGain();
+      const motorLfo = archiveAudioCtx.createOscillator();
+      const motorLfoGain = archiveAudioCtx.createGain();
+      
+      motorOsc1.type = 'triangle';
+      motorOsc1.frequency.setValueAtTime(52, now);
+      
+      motorOsc2.type = 'sine';
+      motorOsc2.frequency.setValueAtTime(54, now);
+      
+      motorLfo.type = 'sine';
+      motorLfo.frequency.setValueAtTime(4, now); // 4Hz rotating phase sweeps
+      
+      motorLfoGain.gain.setValueAtTime(0.012, now);
+      
+      motorGain.gain.setValueAtTime(0.034, now);
+      
+      motorLfo.connect(motorLfoGain);
+      motorLfoGain.connect(motorGain.gain);
+      
+      motorOsc1.connect(motorGain);
+      motorOsc2.connect(motorGain);
+      motorGain.connect(archiveAudioCtx.destination);
+      
+      motorOsc1.start(now);
+      motorOsc2.start(now);
+      motorLfo.start(now);
+      
+      activeAmbientFxOscs.push(motorOsc1, motorOsc2, motorLfo);
+      activeAmbientFxGains.push(motorGain);
+      
+    } else if (type === 'mirai') {
+      // Mirai: rapid scanning DDoS network ping laser sweeps
+      const playMiraiPing = () => {
+        if (!isMusicSequencerActive || !state.soundEnabled) return;
+        const pingOsc = archiveAudioCtx.createOscillator();
+        const pingGain = archiveAudioCtx.createGain();
+        
+        pingOsc.type = 'sine';
+        pingOsc.frequency.setValueAtTime(1400, archiveAudioCtx.currentTime);
+        pingOsc.frequency.exponentialRampToValueAtTime(500, archiveAudioCtx.currentTime + 0.08);
+        
+        pingGain.gain.setValueAtTime(0.02, archiveAudioCtx.currentTime);
+        pingGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.08);
+        
+        pingOsc.connect(pingGain);
+        pingGain.connect(archiveAudioCtx.destination);
+        
+        pingOsc.start();
+        pingOsc.stop(archiveAudioCtx.currentTime + 0.1);
+      };
+      
+      playMiraiPing();
+      const interval = setInterval(playMiraiPing, 220);
+      activeAmbientIntervals.push(interval);
+      
+    } else if (type === 'wannacry') {
+      // WannaCry: low heavy EternalBlue alarm drone
+      const droneOsc1 = archiveAudioCtx.createOscillator();
+      const droneOsc2 = archiveAudioCtx.createOscillator();
+      const droneGain = archiveAudioCtx.createGain();
+      const filter = archiveAudioCtx.createBiquadFilter();
+      
+      droneOsc1.type = 'sawtooth';
+      droneOsc1.frequency.setValueAtTime(51.91, now); // G#1
+      
+      droneOsc2.type = 'sawtooth';
+      droneOsc2.frequency.setValueAtTime(77.78, now); // D#2
+      
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(180, now);
+      
+      droneGain.gain.setValueAtTime(0, now);
+      droneGain.gain.linearRampToValueAtTime(0.048, now + 0.2);
+      
+      droneOsc1.connect(filter);
+      droneOsc2.connect(filter);
+      filter.connect(droneGain);
+      droneGain.connect(archiveAudioCtx.destination);
+      
+      droneOsc1.start(now);
+      droneOsc2.start(now);
+      
+      activeAmbientFxOscs.push(droneOsc1, droneOsc2);
+      activeAmbientFxGains.push(droneGain);
+      
+    } else if (type === 'solarwinds') {
+      // SolarWinds: satellite uplink telemetry data sweeps
+      const playSolarSweep = () => {
+        if (!isMusicSequencerActive || !state.soundEnabled) return;
+        const sweepOsc = archiveAudioCtx.createOscillator();
+        const sweepGain = archiveAudioCtx.createGain();
+        
+        sweepOsc.type = 'square';
+        sweepOsc.frequency.setValueAtTime(2800, archiveAudioCtx.currentTime);
+        sweepOsc.frequency.exponentialRampToValueAtTime(3600, archiveAudioCtx.currentTime + 0.05);
+        
+        sweepGain.gain.setValueAtTime(0.009, archiveAudioCtx.currentTime);
+        sweepGain.gain.exponentialRampToValueAtTime(0.0001, archiveAudioCtx.currentTime + 0.06);
+        
+        sweepOsc.connect(sweepGain);
+        sweepGain.connect(archiveAudioCtx.destination);
+        
+        sweepOsc.start();
+        sweepOsc.stop(archiveAudioCtx.currentTime + 0.08);
+      };
+      
+      playSolarSweep();
+      const interval = setInterval(playSolarSweep, 180);
+      activeAmbientIntervals.push(interval);
+    }
+  } catch (e) {}
+}
+
+function stopLoopingBuzzerAndAmbientFX() {
+  const now = archiveAudioCtx ? archiveAudioCtx.currentTime : 0;
+  
+  // Stop buzzer alarm loop smoothly
+  try {
+    if (activeBuzzerGain && archiveAudioCtx) {
+      activeBuzzerGain.gain.cancelScheduledValues(now);
+      activeBuzzerGain.gain.linearRampToValueAtTime(0, now + 0.12);
+    }
+    setTimeout(() => {
+      if (activeBuzzerOsc) { activeBuzzerOsc.stop(); activeBuzzerOsc = null; }
+      if (activeBuzzerLfo) { activeBuzzerLfo.stop(); activeBuzzerLfo = null; }
+    }, 150);
+  } catch (e) {}
+  
+  // Clear any active interval loops
+  activeAmbientIntervals.forEach(clearInterval);
+  activeAmbientIntervals = [];
+  
+  // Stop ambient unique oscillators
+  activeAmbientFxOscs.forEach(osc => {
+    try { osc.stop(); } catch (e) {}
+  });
+  activeAmbientFxOscs = [];
+  
+  activeAmbientFxGains.forEach(gain => {
+    try {
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.linearRampToValueAtTime(0, now + 0.1);
+    } catch (e) {}
+  });
+  activeAmbientFxGains = [];
+}
+
 // Emergency Buzzer Alarm & Glitch Riser Takeover Sound FX
 function playDramaticAttackTakeoverSound(type) {
   initArchiveAudio();
-  if (!archiveAudioCtx) return;
+  if (!archiveAudioCtx || !state.soundEnabled) return;
   try {
     const now = archiveAudioCtx.currentTime;
 
@@ -1250,50 +1522,6 @@ function playDramaticAttackTakeoverSound(type) {
     riseOsc.connect(riseGain);
     riseGain.connect(archiveAudioCtx.destination);
     riseOsc.start(now); riseOsc.stop(now + 0.5);
-
-    // 3. Cyber Alert Industrial Buzzer (FM Synthesis alert blasts)
-    const buzzOsc = archiveAudioCtx.createOscillator();
-    const buzzLfo = archiveAudioCtx.createOscillator();
-    const buzzLfoGain = archiveAudioCtx.createGain();
-    const buzzGain = archiveAudioCtx.createGain();
-    const buzzFilter = archiveAudioCtx.createBiquadFilter();
-
-    buzzOsc.type = 'sawtooth';
-    buzzOsc.frequency.setValueAtTime(115, now);
-
-    buzzLfo.type = 'square';
-    buzzLfo.frequency.setValueAtTime(15, now); // 15Hz tremolo buzzer modulation
-
-    buzzLfoGain.gain.setValueAtTime(120, now);
-
-    buzzFilter.type = 'bandpass';
-    buzzFilter.frequency.setValueAtTime(880, now);
-    buzzFilter.Q.setValueAtTime(4.5, now);
-
-    buzzGain.gain.setValueAtTime(0, now);
-    // Three rapid alert buzzer sweeps
-    buzzGain.gain.linearRampToValueAtTime(0.09, now + 0.05);
-    buzzGain.gain.setValueAtTime(0.09, now + 0.35);
-    buzzGain.gain.linearRampToValueAtTime(0, now + 0.4);
-    
-    buzzGain.gain.linearRampToValueAtTime(0.09, now + 0.5);
-    buzzGain.gain.setValueAtTime(0.09, now + 0.8);
-    buzzGain.gain.linearRampToValueAtTime(0, now + 0.85);
-
-    buzzGain.gain.linearRampToValueAtTime(0.09, now + 0.95);
-    buzzGain.gain.setValueAtTime(0.09, now + 1.35);
-    buzzGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
-
-    buzzLfo.connect(buzzLfoGain);
-    buzzLfoGain.connect(buzzOsc.frequency);
-    buzzOsc.connect(buzzFilter);
-    buzzFilter.connect(buzzGain);
-    buzzGain.connect(archiveAudioCtx.destination);
-
-    buzzOsc.start(now);
-    buzzLfo.start(now);
-    buzzOsc.stop(now + 1.65);
-    buzzLfo.stop(now + 1.65);
   } catch (e) { }
 }
 
@@ -1438,6 +1666,7 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.remove('cursor-tension');
           document.body.classList.add('cursor-freakout');
           playDramaticAttackTakeoverSound(exhibitType);
+          startLoopingBuzzerAndAmbientFX(exhibitType);
           startExhibitEffect(exhibitType);
         };
 
@@ -1446,6 +1675,7 @@ document.addEventListener('DOMContentLoaded', () => {
           setTensionState(false);
           document.body.classList.remove('cursor-tension', 'cursor-freakout');
           document.body.className = document.body.className.replace(/\binfect-\S+/g, '').trim();
+          stopLoopingBuzzerAndAmbientFX();
           stopExhibitEffect();
         };
 

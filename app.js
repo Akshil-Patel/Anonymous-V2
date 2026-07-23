@@ -397,25 +397,23 @@ document.querySelectorAll('.nav-node').forEach(node => {
 // PHASES & STATE MACHINE TRANSITIONS
 // -------------------------------------------------------------
 
-// Phase 1 -> Phase 2 (User clicks anywhere on dormant screen)
-window.addEventListener('click', (e) => {
+// Automatic boot sequence without requiring click-based login
+let bootTimer = null;
+
+function startHackerBootSequence(clickX, clickY) {
   if (state.phase !== 1) return;
+  if (bootTimer) clearTimeout(bootTimer);
 
   state.phase = 2;
+  
+  // Try initializing audio (browser might block initially, handled by interaction listeners below)
   initAudio();
 
-  // Hide prompt text in loader
-  document.getElementById('dormant-prompt').style.opacity = 0;
-
-  // Trigger system sound
+  // Trigger system sound if audio context is active
   playClickSound(200, 0.2, 0.2);
   playSweepSound();
 
-  // Setup ignition line coordinates from click to closest node
-  const clickX = e.clientX;
-  const clickY = e.clientY;
-
-  // Add a ripple at click coordinate
+  // Add a ripple at click/center coordinate
   ripples.push({
     x: clickX,
     y: clickY,
@@ -425,7 +423,7 @@ window.addEventListener('click', (e) => {
     alpha: 0.8,
   });
 
-  // Identify the entry node (closest node to click)
+  // Identify the entry node (closest node to center/click)
   let closestNodeKey = 'command';
   let minDist = Infinity;
   for (const [key, node] of Object.entries(nodes)) {
@@ -447,8 +445,50 @@ window.addEventListener('click', (e) => {
   });
 
   // Fade out loader UI
-  document.getElementById('dormant-screen').classList.add('fade-out');
+  const dormantScreen = document.getElementById('dormant-screen');
+  if (dormantScreen) {
+    dormantScreen.classList.add('fade-out');
+  }
+}
+
+// User can click early to bypass wait, but it is not required
+window.addEventListener('click', (e) => {
+  if (state.phase === 1) {
+    startHackerBootSequence(e.clientX, e.clientY);
+  }
 });
+
+// Auto-boot system after 2.5 seconds of the logo loader animation
+bootTimer = setTimeout(() => {
+  if (state.phase === 1) {
+    startHackerBootSequence(window.innerWidth / 2, window.innerHeight / 2);
+  }
+}, 2500);
+
+// Global AudioContext Resumer for first user interaction (bypasses browser autoplay policy)
+const resumeAudioOnInteraction = () => {
+  initAudio();
+  initArchiveAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  if (archiveAudioCtx && archiveAudioCtx.state === 'suspended') {
+    archiveAudioCtx.resume();
+  }
+  
+  // Restart drone if in the hallway
+  const badge = document.getElementById('archive-year-badge');
+  if (badge && badge.classList.contains('is-visible') && !isMusicSequencerActive) {
+    startArchiveAmbientDrone();
+  }
+  
+  // Remove self
+  const events = ['click', 'mousedown', 'keydown', 'touchstart', 'wheel', 'mousemove'];
+  events.forEach(evt => window.removeEventListener(evt, resumeAudioOnInteraction));
+};
+
+const events = ['click', 'mousedown', 'keydown', 'touchstart', 'wheel', 'mousemove'];
+events.forEach(evt => window.addEventListener(evt, resumeAudioOnInteraction));
 
 // Sound Toggle control
 const audioToggleBtn = document.getElementById('audio-toggle');

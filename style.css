@@ -360,42 +360,40 @@ body.cursor-freakout .dot-visual {
   mask-repeat: no-repeat;
   mask-position: center;
   z-index: 2;
-  opacity: 0;
-  animation: fade-in-tracers 0.2s linear 0.8s forwards;
+  /* Removed buggy opacity/animation from container. Tracers handle their own visibility. */
 }
 
 .glow-logo-tracer {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   border-radius: 50%;
-  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.8));
-  /* Inner radial mask cuts out the center eagle, isolating the outer ring */
-  -webkit-mask-image: radial-gradient(circle, transparent 105px, black 112px);
-  mask-image: radial-gradient(circle, transparent 105px, black 112px);
+  /* Increased brightness of the tracer beams to stand out over the white base */
+  filter: drop-shadow(0 0 12px #3b82f6) drop-shadow(0 0 25px #60a5fa);
+  /* Safe percentage-based mask to clear the center without clipping small logos */
+  -webkit-mask-image: radial-gradient(circle, transparent 35%, black 48%);
+  mask-image: radial-gradient(circle, transparent 35%, black 48%);
 }
 
 .tracer-left {
   background: conic-gradient(
     from 180deg,
-    transparent 0deg,
-    transparent 320deg,
-    rgba(96, 165, 250, 0) 320deg,
-    #60a5fa 355deg,
+    rgba(96, 165, 250, 0) 0deg,
+    rgba(96, 165, 250, 0) 330deg,
+    #3b82f6 350deg,
     #ffffff 360deg
   );
-  animation: trace-left 3.5s cubic-bezier(0.4, 0, 0.2, 1) 1.0s forwards;
+  animation: trace-left 3.5s linear 1.0s forwards;
 }
 
 .tracer-right {
   background: conic-gradient(
     from 180deg,
     #ffffff 0deg,
-    #60a5fa 5deg,
-    rgba(96, 165, 250, 0) 40deg,
-    transparent 40deg,
-    transparent 360deg
+    #3b82f6 10deg,
+    rgba(96, 165, 250, 0) 30deg,
+    rgba(96, 165, 250, 0) 360deg
   );
-  animation: trace-right 3.5s cubic-bezier(0.4, 0, 0.2, 1) 1.0s forwards;
+  animation: trace-right 3.5s linear 1.0s forwards;
 }
 
 @keyframes base-logo-appear {

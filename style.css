@@ -367,21 +367,21 @@ body.cursor-freakout .dot-visual {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   border-radius: 50%;
-  /* Hyper-intense glowing aura around the blue accent line */
-  filter: drop-shadow(0 0 8px #0066ff) drop-shadow(0 0 20px #00f0ff) drop-shadow(0 0 40px #0066ff);
-  /* Wider radial band to allow the blue accent line to be thicker */
-  -webkit-mask-image: radial-gradient(circle, transparent 25%, black 42%);
-  mask-image: radial-gradient(circle, transparent 25%, black 42%);
+  /* Pure blue/cyan glowing aura without white inner strips */
+  filter: drop-shadow(0 0 8px #0066ff) drop-shadow(0 0 20px #00f0ff) drop-shadow(0 0 35px #0066ff);
+  /* Radial mask isolating the outer perimeter of the logo */
+  -webkit-mask-image: radial-gradient(circle, transparent 40%, black 46%);
+  mask-image: radial-gradient(circle, transparent 40%, black 46%);
 }
 
 .tracer-left {
   background: conic-gradient(
     from 180deg,
     rgba(0, 102, 255, 0) 0deg,
-    rgba(0, 102, 255, 0) 300deg,
-    #0066ff 335deg,
+    rgba(0, 102, 255, 0) 310deg,
+    rgba(0, 102, 255, 0.8) 335deg,
     #00f0ff 352deg,
-    #ffffff 360deg
+    #0066ff 360deg
   );
   animation: trace-left 3.5s linear 1.0s forwards;
 }
@@ -389,10 +389,10 @@ body.cursor-freakout .dot-visual {
 .tracer-right {
   background: conic-gradient(
     from 180deg,
-    #ffffff 0deg,
+    #0066ff 0deg,
     #00f0ff 8deg,
-    #0066ff 25deg,
-    rgba(0, 102, 255, 0) 60deg,
+    rgba(0, 102, 255, 0.8) 25deg,
+    rgba(0, 102, 255, 0) 50deg,
     rgba(0, 102, 255, 0) 360deg
   );
   animation: trace-right 3.5s linear 1.0s forwards;

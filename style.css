@@ -377,9 +377,9 @@ body.cursor-freakout .dot-visual {
 .tracer-left {
   background: conic-gradient(
     from 180deg,
-    rgba(96, 165, 250, 0) 0deg,
-    rgba(96, 165, 250, 0) 330deg,
-    #3b82f6 350deg,
+    rgba(0, 229, 255, 0) 0deg,
+    rgba(0, 229, 255, 0) 240deg,
+    rgba(0, 229, 255, 0.8) 330deg,
     #ffffff 360deg
   );
   animation: trace-left 3.5s linear 1.0s forwards;
@@ -389,16 +389,16 @@ body.cursor-freakout .dot-visual {
   background: conic-gradient(
     from 180deg,
     #ffffff 0deg,
-    #3b82f6 10deg,
-    rgba(96, 165, 250, 0) 30deg,
-    rgba(96, 165, 250, 0) 360deg
+    rgba(0, 229, 255, 0.8) 30deg,
+    rgba(0, 229, 255, 0) 120deg,
+    rgba(0, 229, 255, 0) 360deg
   );
   animation: trace-right 3.5s linear 1.0s forwards;
 }
 
 @keyframes base-logo-appear {
   0% { opacity: 0; filter: blur(10px); transform: scale(0.9); }
-  100% { opacity: 0.95; filter: blur(0); transform: scale(1); }
+  100% { opacity: 0.45; filter: blur(0); transform: scale(1); }
 }
 
 @keyframes fade-in-tracers {

@@ -1269,34 +1269,32 @@ body::before {
     padding: 1.5rem;
   }
 
-  /* Navbar: compact for tablet */
-  .glass-nav {
-    width: 94%;
-    padding: 0.5rem 1.2rem;
-    border-radius: 12px;
+  .tiger-nav {
+    padding: 0.55rem 1.4rem;
+    min-height: 56px;
   }
 
-  .nav-brand {
+  .nav-pill-cluster {
+    gap: 8px;
+  }
+
+  .nav-pill-btn {
+    padding: 0.4rem 0.85rem;
     font-size: 0.7rem;
-    letter-spacing: 2px;
-  }
-
-  .nav-logo {
-    height: 18px;
-  }
-
-  .nav-link {
-    font-size: 0.62rem;
     letter-spacing: 1.5px;
   }
 
-  .nav-divider {
-    height: 8px;
+  .brand-title-text {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+  }
+
+  .nav-logo-clean {
+    height: 22px;
   }
 
   #audio-label {
-    display: none;
-    /* Hide text, keep wave icon only */
+    display: none; /* Hide sound label text on mobile, keep visualizer bar */
   }
 
   #audio-toggle {
@@ -1347,77 +1345,65 @@ body::before {
   }
 }
 
-/* Mobile phones */
-@media (max-width: 600px) {
-
-  /* Navbar: Minimal Floating Pill for Mobile */
-  .glass-nav {
-    top: auto;
-    bottom: 2rem;
-    width: max-content;
-    padding: 0.6rem 1.5rem;
-    border-radius: 40px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    background: rgba(10, 10, 12, 0.35);
-    backdrop-filter: saturate(180%) blur(40px);
-    -webkit-backdrop-filter: saturate(180%) blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+/* Mobile phones (< 640px) */
+@media (max-width: 640px) {
+  .tiger-nav {
+    padding: 0.45rem 0.85rem;
+    min-height: 52px;
   }
 
-  .nav-left {
-    display: none;
-    /* Hide logo/brand on mobile nav */
+  .nav-pill-cluster {
+    gap: 5px;
   }
 
-  .nav-right {
-    width: 100%;
-    gap: 1.8rem;
-    justify-content: center;
+  /* Compact pills for small mobile viewports */
+  .nav-pill-btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    gap: 5px;
   }
 
-  .nav-text {
-    display: none;
-    /* Hide text, show only icons */
+  .pill-dot {
+    width: 4px;
+    height: 4px;
   }
 
-  .nav-icon {
-    display: block;
-    /* Show icons */
-    width: 20px;
+  .nav-center-brand {
+    gap: 6px;
+  }
+
+  .nav-logo-clean {
     height: 20px;
-    opacity: 0.5;
-    /* Muted default state */
-    stroke-width: 1.5px;
-    /* Thinner, cleaner lines */
   }
 
-  .nav-link.active .nav-icon {
-    opacity: 1;
-    color: var(--text-primary);
-    /* White instead of blue for minimal look */
-    transform: none;
-    /* Remove desktop jump effect on mobile */
+  .brand-title-text {
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+  }
+}
+
+/* Ultra-small mobile phones (< 460px) */
+@media (max-width: 460px) {
+  .tiger-nav {
+    padding: 0.4rem 0.5rem;
   }
 
-  .nav-audio-toggle .nav-icon {
-    display: block;
-    opacity: 0.5;
+  .nav-pill-btn--desktop-only {
+    display: none; /* Hide secondary desktop links on ultra-small screens */
   }
 
-  .nav-link,
-  .nav-audio-toggle {
-    padding: 4px;
-    gap: 0;
+  .brand-title-text {
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
   }
 
-  .nav-divider {
-    display: none;
+  .nav-pill-btn {
+    padding: 0.32rem 0.55rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.5px;
   }
-
-  #audio-label,
-  .audio-wave {
-    display: none;
-  }
+}
 
   /* Title */
   #cinematic-title-container {

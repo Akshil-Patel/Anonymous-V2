@@ -1072,17 +1072,16 @@ body::before {
   overflow: hidden;
 }
 
-.pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text-muted);
-  transition: background 0.3s ease;
+.pill-icon {
+  width: 14px;
+  height: 14px;
+  transition: color 0.3s ease, stroke 0.3s ease, transform 0.3s ease;
+  color: var(--text-muted);
 }
 
-.nav-pill-btn:hover .pill-dot,
-.nav-pill-btn.active .pill-dot {
-  background: #3b82f6;
+.nav-pill-btn:hover .pill-icon,
+.nav-pill-btn.active .pill-icon {
+  color: #3b82f6;
 }
 
 .nav-pill-btn:hover {
@@ -1390,8 +1389,8 @@ body::before {
   }
 
   .nav-pill-btn {
-    padding: 0.3rem 0.4rem;
-    font-size: 0.52rem;
+    padding: 0.4rem;
+    font-size: 0.6rem;
     letter-spacing: 0.5px;
   }
   
@@ -2965,6 +2964,24 @@ body.infect-solarwinds #exhibit-solarwinds {
   }
   
   .nav-pill-cluster {
-    gap: 2px;
+    gap: 10px;
+  }
+  
+  .nav-pill-btn {
+    padding: 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .pill-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .pill-text {
+    display: none;
+  }
+  
+  .nav-pill-btn.active .pill-text {
+    display: inline;
   }
 }

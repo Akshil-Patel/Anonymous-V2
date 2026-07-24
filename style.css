@@ -1386,22 +1386,17 @@ body::before {
 /* Ultra-small mobile phones (< 460px) */
 @media (max-width: 460px) {
   .tiger-nav {
-    padding: 0.4rem 0.5rem;
-  }
-
-  .nav-pill-btn--desktop-only {
-    display: none; /* Hide secondary desktop links on ultra-small screens */
-  }
-
-  .brand-title-text {
-    font-size: 0.68rem;
-    letter-spacing: 1.5px;
+    padding: 0.4rem 0.2rem;
   }
 
   .nav-pill-btn {
-    padding: 0.32rem 0.55rem;
-    font-size: 0.58rem;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.52rem;
     letter-spacing: 0.5px;
+  }
+  
+  .nav-center-brand {
+    gap: 4px;
   }
 }
 
@@ -2921,4 +2916,55 @@ body.infect-solarwinds #exhibit-solarwinds {
 /* Neon Glow Arrival Flash */
 .footer-lift.lift-pulse {
   filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));
+}
+
+/* ── Footer & Navbar Mobile Overrides ── */
+@media (max-width: 768px) {
+  .footer-inner {
+    padding: 3rem 1.5rem 2rem;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+  
+  .footer-brand {
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .footer-brand-text {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .footer-col, .footer-col:last-child {
+    align-items: center;
+  }
+  
+  .footer-socials {
+    justify-content: center;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .footer-dot {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-title-text {
+    display: none; /* Save space for all pills */
+  }
+  
+  .nav-pill-cluster {
+    gap: 2px;
+  }
 }
